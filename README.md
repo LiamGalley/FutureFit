@@ -4,7 +4,7 @@
 
 <br>
 
-<p>FutureFit is an application designed to help users of all ages, and any underlying health conditions to improve the quality of their life by giving a detailed plan of exercises based on specific user information using the power of AI.</p>
+<p>FutureFit is an application designed to help users of all ages, with any underlying health conditions to improve the quality of their life by giving a detailed plan of exercises based on specific user information using the power of AI.</p>
 
 ## Project Proposal
 
@@ -16,6 +16,17 @@
   <li>Liam:      Backend, Viewmodel, Stateful Composables.</li>
   <li>Rambert:   Frontend, Material Themes, Stateless Composables.</li>
   <li>Julien:    API Calling, AI Implementation.</li>
+</ul>
+
+### Scope
+<br>
+
+<ul>
+  <li>Allows the user to easily change their personal body information.</li>
+  <li>Allows the user to change switch between their preffered measuring systems.</li>
+  <li>Allows the user to select different muscle groups and select their available equipement.</li>
+  <li>Allows the user to select workouts based on their information and selections.</li>
+  <li>Allows the user to see and search from their history of completed workouts.</li>
 </ul>
 
 ## The Application Specifics
