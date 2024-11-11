@@ -6,9 +6,9 @@
 
 <p>FutureFit is an application designed to help users of all ages, with any underlying health conditions to improve the quality of their life by giving a detailed plan of exercises based on specific user information using the power of AI.</p>
 <br>
-<p>In more depth, FutureFit is an application that will be used to provide users' with detailed, structured and specific workout plans. No longer do you have to look up through countless sites about what exactly you should do given the x, y and z you have at home. Instead, FutureFit keeps track of the user's personal information, and always easy checkbox input of their specifications for their current workout environment. Then using Google's Gemini AI, it condenses all the information and outputs workouts that are targeted specifically for the user and their needs.</p>
+<p>In more depth, FutureFit is an application that will be used to provide users' with detailed, structured and specific workout plans. No longer do you have to look up through countless sites about what exactly you should do given the x, y and z you have at home. Instead, FutureFit keeps track of the user's personal information, and always easy checkbox input of their specifications for their current workout environment. Then using Google's Gemini AI, it condenses all the information and outputs workouts that are targeted specifically for the user and their needs. This is all done in a clean, simple to navigate app.</p>
 <br>
-<p>After completetion of workouts, the user can track the entire history, search up specific workouts they've done. Not only that, but they'll be able to see their current body weight and the weight of the utilized equipement so that they could keep track of their progress.</p>
+<p>After completetion of workouts, the user can track the entire history, search up specific workouts they've done. Not only that, but they'll be able to see their current body weight and the weight of the utilized equipement so that they could keep track of their progress. This is done by keeping track of every user using our database. Where users have their table with personal information, and workouts are stored together with IDs keeping track of what belongs to who.</p>
 
 ## Project Proposal
 
