@@ -16,10 +16,10 @@ import com.aallam.openai.client.OpenAI
 class GPTViewModel : ViewModel() {
     var gptResponse by mutableStateOf("")
     //Where you can change the sent query
-    var gptQuery = mutableStateOf("Get me a single line motivational quote different everytime")
+    var gptQuery = mutableStateOf("")
 
     private val openAI = OpenAI(
-        "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"
+        "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"
     )
 
     @OptIn(BetaOpenAI::class)
@@ -42,5 +42,9 @@ class GPTViewModel : ViewModel() {
                 gptResponse = "ERROR: ${e.cause?.message ?: "Unknown error"}"
             }
         }
+    }
+
+    fun setQuery(query: String) {
+        gptQuery.value = query
     }
 }
