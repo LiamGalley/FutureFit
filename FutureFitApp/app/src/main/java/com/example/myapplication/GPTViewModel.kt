@@ -19,7 +19,7 @@ class GPTViewModel : ViewModel() {
     var gptQuery = mutableStateOf("")
 
     private val openAI = OpenAI(
-        "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"
+        "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"
     )
 
     @OptIn(BetaOpenAI::class)
