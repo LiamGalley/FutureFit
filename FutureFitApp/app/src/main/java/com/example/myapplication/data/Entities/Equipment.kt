@@ -1,9 +1,13 @@
 package com.example.myapplication.data.entities
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "equipement")
 class Equipment (
-    val id: Int = 0,
-    val name: String = "",
-    val muscleGroupList: List<MuscleGroup> = MuscleGroup.getMuscleGroupList()
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "name") val name: String,
 ) {
     companion object {
         fun getEquipmentList(): List<Equipment> {
