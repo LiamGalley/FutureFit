@@ -5,5 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.example.myapplication.data.entities.Exercise
 
 class HomeViewModel : ViewModel() {
-    private val quote = mutableStateOf("")
+    private val repository: String = ""
+
 }

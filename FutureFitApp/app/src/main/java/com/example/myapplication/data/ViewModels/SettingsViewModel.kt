@@ -1,4 +1,46 @@
-package com.example.myapplication.data.ViewModels;
+package com.example.myapplication.data.ViewModels
 
-public class SettingsViewModel {
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.DataStoreManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+
+class SettingsViewModel(
+    private val dataStoreManager: DataStoreManager
+) : ViewModel() {
+    private val repository: String = ""
+    private var _darkTheme = MutableStateFlow(false)
+    private var _metricSystem = MutableStateFlow(false)
+
+    var darkTheme: StateFlow<Boolean> = _darkTheme.asStateFlow()
+    var metricSystem: StateFlow<Boolean> = _metricSystem.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _darkTheme.value = dataStoreManager.darkModeFlow.first()
+            _metricSystem.value = dataStoreManager.metricSystemFlow.first()
+        }
+    }
+
+    fun toggleTheme() {
+        val theme = !_darkTheme.value
+
+        viewModelScope.launch {
+            dataStoreManager.saveTheme(theme)
+            _darkTheme.value = theme
+        }
+    }
+
+    fun toggleMeasurementSystem() {
+        val system = !_metricSystem.value
+
+        viewModelScope.launch {
+            dataStoreManager.saveMeasurementSystem(system)
+            _metricSystem.value = system
+        }
+    }
 }
