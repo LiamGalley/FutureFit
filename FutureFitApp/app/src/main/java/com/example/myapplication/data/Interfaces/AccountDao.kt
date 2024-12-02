@@ -21,5 +21,4 @@ interface AccountDao {
 
     @Query("SELECT * FROM account WHERE account_id LIKE :id")
     fun getAccountById(id: Int): Flow<List<Account>>
-
 }

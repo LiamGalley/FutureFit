@@ -20,8 +20,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,7 +32,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.example.myapplication.data.AccountViewModel
+import com.example.myapplication.data.AnotherViewModel
 import com.example.myapplication.data.AppDatabase
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Repository
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.theme.navigation.NavigationContent
 
@@ -48,10 +53,19 @@ class MainActivity : ComponentActivity() {
         Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
-            "futurefit.db"
+            "account.db"
         ).build()
     }
 
+    private val viewModel by viewModels<AnotherViewModel> (
+        factoryProducer = {
+            object : ViewModelProvider.Factory{
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return AnotherViewModel(Repository(db)) as T
+                }
+            }
+        }
+    )
     /*
     private val viewModel by viewModels<AccountViewModel>(
         factoryProducer = {
@@ -74,9 +88,46 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GPTResponseScreen(gptViewModel)
+                    var email by remember {
+                        mutableStateOf("")
+                    }
+                    var firstName by remember {
+                        mutableStateOf("")
+                    }
+                    var lastName by remember {
+                        mutableStateOf("")
+                    }
+                    val account = Account(
+                        emailAddress = email,
+                        firstName = firstName,
+                        lastName = lastName
+                    )
+                    Column(Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ){
+                        Button(onClick = {
+                                viewModel.upsertAccount(account)
+                            }){
+                            Text(text = "register")
+                        }
+                        TextField(value = email, onValueChange = {email = it}, placeholder = { Text(
+                            text = "email"
+                        )})
+                        TextField(value = firstName, onValueChange = {firstName = it}, placeholder = { Text(
+                            text = "firstName"
+                        )})
+                        TextField(value = lastName, onValueChange = {lastName = it}, placeholder = { Text(
+                            text = "lastName"
+                        )})
+                    }
+
+
+
+
+
+                    //GPTResponseScreen(gptViewModel)
                 }
-                NavigationContent()
+                //NavigationContent()
             }
         }
     }
