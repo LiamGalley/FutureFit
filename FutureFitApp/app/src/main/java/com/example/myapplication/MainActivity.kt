@@ -26,6 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import com.example.myapplication.data.AccountViewModel
+import com.example.myapplication.data.AppDatabase
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.theme.navigation.NavigationContent
 
@@ -39,6 +44,26 @@ sealed class NavDestination(val title: String, val route: String, val icon: Imag
 
 
 class MainActivity : ComponentActivity() {
+    private val db by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "futurefit.db"
+        ).build()
+    }
+
+    /*
+    private val viewModel by viewModels<AccountViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    return AccountViewModel(db.dao) as T
+                }
+            }
+        }
+    )
+    */
+
     private val gptViewModel: GPTViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

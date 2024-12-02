@@ -4,23 +4,22 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.myapplication.data.entities.Account
+import androidx.room.Upsert
+import com.example.myapplication.data.Entities.Account
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AccountDao {
-    @Query("SELECT * FROM account")
-    fun getAll(): List<Account>
-
-    @Query("SELECT * FROM account WHERE accountId IN (:accountIds)")
-    fun loadAllByIds(accountIds: IntArray): List<Account>
-
-    @Query("SELECT * FROM account WHERE first_name LIKE :first AND " +
-            "last_name LIKE :last LIMIT 1")
-    fun findByName(first: String, last: String): Account
-
-    @Insert
-    fun insertAll(vararg accounts: Account)
+    @Upsert
+    suspend fun upsertAccount(account: Account)
 
     @Delete
-    fun delete(account: Account)
+    suspend fun deleteAccount(account: Account)
+
+    @Query("SELECT * FROM account WHERE email_address LIKE :email")
+    fun getAccountByEmail(email: String): Flow<List<Account>>
+
+    @Query("SELECT * FROM account WHERE account_id LIKE :id")
+    fun getAccountById(id: Int): Flow<List<Account>>
+
 }
