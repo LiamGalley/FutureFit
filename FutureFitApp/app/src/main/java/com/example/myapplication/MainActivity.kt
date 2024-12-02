@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.composable
+import com.example.myapplication.ui.theme.navigation.NavigationContent
 
 sealed class NavDestination(val title: String, val route: String, val icon: ImageVector)
 {
@@ -46,87 +47,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                val navController = rememberNavController()
-                val items = listOf(
-                    NavDestination.Home, NavDestination.Workouts,NavDestination.Other, NavDestination.Settings
-                )
-
-                Scaffold(
-                    bottomBar = {
-                        NavigationBar {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentDestination = navBackStackEntry?.destination
-                            items.forEach { screen ->
-                                NavigationBarItem(
-                                    icon = {
-                                        Icon(imageVector = screen.icon, contentDescription = null)
-                                    },
-                                    label = { Text(screen.title) },
-                                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                    onClick = {
-                                        navController.navigate(screen.route) {
-                                            // Pop up to the start destination of the graph to
-                                            // avoid building up a large stack of destinations
-                                            // on the back stack as users select items
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            // Avoid multiple copies of the same destination when
-                                            // reselecting the same item
-                                            launchSingleTop = true
-                                            // Restore state when reselecting a previously selected item
-                                            restoreState = true
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
-                ) { innerPadding ->
-                    NavHost(navController = navController,
-                            startDestination = "home_screen",
-                            modifier = Modifier.padding(innerPadding)){
-                        composable(route = "home_screen") {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(text="to be done", fontSize = 62.sp)
-                            }
-                        }
-
-                        composable(route = NavDestination.Workouts.route) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(text="Workout", fontSize = 62.sp)
-                            }
-                        }
-
-                        composable(route = NavDestination.Other.route) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(text="Other", fontSize = 62.sp)
-                            }
-                        }
-
-                        composable(route = NavDestination.Settings.route) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(text="Settings", fontSize = 62.sp)
-                            }
-                        }
-                    }
-                }
+                NavigationContent()
             }
         }
     }
