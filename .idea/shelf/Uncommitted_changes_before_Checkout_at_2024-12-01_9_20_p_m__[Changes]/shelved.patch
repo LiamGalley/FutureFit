@@ -1,0 +1,80 @@
+Index: FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.myapplication\r\n\r\nimport android.graphics.drawable.Icon\r\nimport android.os.Bundle\r\nimport androidx.activity.ComponentActivity\r\nimport androidx.activity.compose.setContent\r\nimport androidx.activity.viewModels\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.material3.Button\r\nimport androidx.compose.material3.MaterialTheme\r\nimport androidx.compose.material3.NavigationBar\r\nimport androidx.compose.material3.Scaffold\r\nimport androidx.compose.material3.Surface\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.material3.TextField\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.vector.ImageVector\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.navigation.compose.NavHost\r\nimport androidx.navigation.compose.currentBackStackEntryAsState\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.example.myapplication.ui.theme.MyApplicationTheme\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material3.Icon\r\nimport androidx.compose.material3.NavigationBarItem\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.navigation.NavDestination.Companion.hierarchy\r\nimport androidx.navigation.NavGraph.Companion.findStartDestination\r\nimport androidx.navigation.compose.composable\r\nimport com.example.myapplication.ui.theme.navigation.NavigationContent\r\n\r\nsealed class NavDestination(val title: String, val route: String, val icon: ImageVector)\r\n{\r\n    object Home: NavDestination(title=\"Home\",route=\"home_screen\",icon= Icons.Default.Home)\r\n    object Workouts: NavDestination(title=\"Workouts\",route=\"workouts\",icon= Icons.Default.List)\r\n    object Other: NavDestination(title=\"Other\",route=\"other\",icon= Icons.Default.Info)\r\n    object Settings: NavDestination(title=\"Settings\",route=\"settings\",icon= Icons.Default.Settings)\r\n}\r\n\r\n\r\nclass MainActivity : ComponentActivity() {\r\n    private val gptViewModel: GPTViewModel by viewModels()\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContent {\r\n            MyApplicationTheme {\r\n                Surface(\r\n                    modifier = Modifier.fillMaxSize(),\r\n                    color = MaterialTheme.colorScheme.background\r\n                ) {\r\n                    GPTResponseScreen(gptViewModel)\r\n                }\r\n                NavigationContent()\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n\r\n@Composable\r\nfun GPTResponseScreen(viewModel: GPTViewModel) {\r\n    val userQuery = remember { mutableStateOf(\"\") }\r\n\r\n    Scaffold { paddingValues ->\r\n        Column(\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .padding(paddingValues),\r\n            verticalArrangement = Arrangement.Top,\r\n            horizontalAlignment = Alignment.CenterHorizontally\r\n        ) {\r\n            TextField(\r\n                value = userQuery.value,\r\n                onValueChange = { userQuery.value = it },\r\n                label = { Text(\"Enter your query\") }\r\n            )\r\n            Button(\r\n                onClick = {\r\n                    viewModel.setQuery(userQuery.value)\r\n                    viewModel.fetchGPTResponse()\r\n                },\r\n                modifier = Modifier.padding(16.dp)\r\n            ) {\r\n                Text(\"Send\")\r\n            }\r\n            Text(\r\n                text = viewModel.gptResponse,\r\n                modifier = Modifier.padding(16.dp)\r\n            )\r\n        }\r\n    }\r\n}\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt b/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt
+--- a/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt	(revision 0b10e4a65d6572a4d4bc96641723aa4849998c93)
++++ b/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt	(date 1733105846397)
+@@ -1,18 +1,20 @@
+ package com.example.myapplication
+ 
+-import android.graphics.drawable.Icon
+ import android.os.Bundle
+ import androidx.activity.ComponentActivity
+ import androidx.activity.compose.setContent
+ import androidx.activity.viewModels
+-import androidx.activity.enableEdgeToEdge
+ import androidx.compose.foundation.layout.Arrangement
+ import androidx.compose.foundation.layout.Column
+ import androidx.compose.foundation.layout.fillMaxSize
+ import androidx.compose.foundation.layout.padding
++import androidx.compose.material.icons.Icons
++import androidx.compose.material.icons.filled.Home
++import androidx.compose.material.icons.filled.Info
++import androidx.compose.material.icons.filled.List
++import androidx.compose.material.icons.filled.Settings
+ import androidx.compose.material3.Button
+ import androidx.compose.material3.MaterialTheme
+-import androidx.compose.material3.NavigationBar
+ import androidx.compose.material3.Scaffold
+ import androidx.compose.material3.Surface
+ import androidx.compose.material3.Text
+@@ -21,25 +23,10 @@
+ import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.runtime.remember
+ import androidx.compose.ui.Alignment
+-import androidx.compose.ui.Modifier
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.runtime.getValue
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.graphics.vector.ImageVector
+-import androidx.compose.ui.tooling.preview.Preview
+-import androidx.navigation.compose.NavHost
+-import androidx.navigation.compose.currentBackStackEntryAsState
+-import androidx.navigation.compose.rememberNavController
++import androidx.compose.ui.unit.dp
+ import com.example.myapplication.ui.theme.MyApplicationTheme
+-import androidx.compose.material.icons.Icons
+-import androidx.compose.material.icons.filled.*
+-import androidx.compose.material3.Icon
+-import androidx.compose.material3.NavigationBarItem
+-import androidx.compose.ui.Alignment
+-import androidx.compose.ui.unit.sp
+-import androidx.navigation.NavDestination.Companion.hierarchy
+-import androidx.navigation.NavGraph.Companion.findStartDestination
+-import androidx.navigation.compose.composable
+ import com.example.myapplication.ui.theme.navigation.NavigationContent
+ 
+ sealed class NavDestination(val title: String, val route: String, val icon: ImageVector)
+Index: FutureFitApp/app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n    alias(libs.plugins.kotlin.android)\r\n    alias(libs.plugins.kotlin.compose)\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.myapplication\"\r\n    compileSdk = 35\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.myapplication\"\r\n        minSdk = 24\r\n        targetSdk = 34\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_11\r\n        targetCompatibility = JavaVersion.VERSION_11\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = \"11\"\r\n    }\r\n    buildFeatures {\r\n        compose = true\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation(libs.androidx.core.ktx)\r\n    implementation(libs.androidx.lifecycle.runtime.ktx)\r\n    implementation(libs.androidx.activity.compose)\r\n    implementation(platform(libs.androidx.compose.bom))\r\n    implementation(libs.androidx.ui)\r\n    implementation(libs.androidx.ui.graphics)\r\n    implementation(libs.androidx.ui.tooling.preview)\r\n    implementation(libs.androidx.material3)d\r\n    implementation (libs.openai.client)\r\n    implementation (libs.ktor.client.android)\r\n    implementation(libs.androidx.lifecycle.viewmodel.ktx)\r\n    implementation(libs.retrofit)\r\n    implementation(libs.converter.gson)\r\n    implementation(libs.ktor.client.serialization)\r\n    implementation(libs.androidx.navigation.compose)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.androidx.junit)\r\n    androidTestImplementation(libs.androidx.espresso.core)\r\n    androidTestImplementation(platform(libs.androidx.compose.bom))\r\n    androidTestImplementation(libs.androidx.ui.test.junit4)\r\n    debugImplementation(libs.androidx.ui.tooling)\r\n    debugImplementation(libs.androidx.ui.test.manifest)\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/FutureFitApp/app/build.gradle.kts b/FutureFitApp/app/build.gradle.kts
+--- a/FutureFitApp/app/build.gradle.kts	(revision 0b10e4a65d6572a4d4bc96641723aa4849998c93)
++++ b/FutureFitApp/app/build.gradle.kts	(date 1733105846386)
+@@ -48,7 +48,7 @@
+     implementation(libs.androidx.ui)
+     implementation(libs.androidx.ui.graphics)
+     implementation(libs.androidx.ui.tooling.preview)
+-    implementation(libs.androidx.material3)d
++    implementation(libs.androidx.material3)
+     implementation (libs.openai.client)
+     implementation (libs.ktor.client.android)
+     implementation(libs.androidx.lifecycle.viewmodel.ktx)
