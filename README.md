@@ -47,5 +47,5 @@
   <li>WorkoutHistoryScreen:  Shows the user their history of all workouts.</li>
 </ul>
 
-Visual Link To Screen: https://excalidraw.com/#json=noJppImg_MCw4nkhCTXST,yF0YhLAae3k_QkaKJ1-2eg
-![image](https://excalidraw.com/#json=A46_vov4f8u95h3mCHvUF,r7vVZ6JCApQT0DusUAKQCw)
+Visual Link To Screen: https://excalidraw.com/#json=A46_vov4f8u95h3mCHvUF,r7vVZ6JCApQT0DusUAKQCw
+![FutureFit_Wireframe](https://github.com/user-attachments/assets/b0377bca-6fec-4ab9-abc8-24428c682c07)
