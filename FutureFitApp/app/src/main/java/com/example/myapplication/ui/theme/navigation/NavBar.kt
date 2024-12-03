@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.theme.navigation
 
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,12 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.GPTViewModel
+import com.example.myapplication.data.AnotherViewModel
+import com.example.myapplication.ui.theme.screens.HomeScreen
+import com.example.myapplication.ui.theme.screens.ProfileScreen
+import com.example.myapplication.ui.theme.screens.tempProfilScreen
+import kotlin.getValue
 
 sealed class NavDestination(val title: String, val route: String, val icon: ImageVector)
 {
@@ -36,7 +44,7 @@ sealed class NavDestination(val title: String, val route: String, val icon: Imag
 }
 
 @Composable
-fun NavigationContent() {
+fun NavigationContent(dbViewModel: AnotherViewModel) {
     val navController = rememberNavController()
     val items = listOf(
         com.example.myapplication.NavDestination.Home, com.example.myapplication.NavDestination.Workouts,
@@ -84,7 +92,8 @@ fun NavigationContent() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text="to be done", fontSize = 62.sp)
+                    val gptViewModel: GPTViewModel = viewModel()
+                    HomeScreen(navController = navController, gptViewModel = gptViewModel)
                 }
             }
 
@@ -114,7 +123,7 @@ fun NavigationContent() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text="Settings", fontSize = 62.sp)
+                    tempProfilScreen(navController = navController, viewModel = dbViewModel)
                 }
             }
         }
