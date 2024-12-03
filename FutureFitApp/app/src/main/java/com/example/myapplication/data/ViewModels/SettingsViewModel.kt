@@ -2,7 +2,7 @@ package com.example.myapplication.data.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.DataStoreManager
+import com.example.myapplication.data.DataStores.DataStoreManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,22 +12,33 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
+    //#region Fields
+    // ADD DATABASE CONNECTION
     private val repository: String = ""
     private var _darkTheme = MutableStateFlow(false)
     private var _metricSystem = MutableStateFlow(false)
+    private var _fontSize = MutableStateFlow(12)
+    //#endregion
 
-    var darkTheme: StateFlow<Boolean> = _darkTheme.asStateFlow()
-    var metricSystem: StateFlow<Boolean> = _metricSystem.asStateFlow()
+    //#region StateFlows
+    private var darkTheme: StateFlow<Boolean> = _darkTheme.asStateFlow()
+    private var metricSystem: StateFlow<Boolean> = _metricSystem.asStateFlow()
+    private var fontSize: StateFlow<Int> = _fontSize.asStateFlow()
+    //#endregion
 
+    //#region Constructor
     init {
         viewModelScope.launch {
             _darkTheme.value = dataStoreManager.darkModeFlow.first()
             _metricSystem.value = dataStoreManager.metricSystemFlow.first()
+            _fontSize.value = dataStoreManager.fontSizeFlow.first()
         }
     }
+    //#endregion
 
+    //#region Methods
     fun toggleTheme() {
-        val theme = !_darkTheme.value
+        val theme = !darkTheme.value
 
         viewModelScope.launch {
             dataStoreManager.saveTheme(theme)
@@ -36,11 +47,19 @@ class SettingsViewModel(
     }
 
     fun toggleMeasurementSystem() {
-        val system = !_metricSystem.value
+        val system = !metricSystem.value
 
         viewModelScope.launch {
             dataStoreManager.saveMeasurementSystem(system)
             _metricSystem.value = system
         }
     }
+
+    fun changeFontSize(size: Int){
+        viewModelScope.launch {
+            dataStoreManager.saveFontSize(size)
+            _fontSize.value = size
+        }
+    }
+    //#endregion
 }

@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2055bda-2450-4fcc-bc89-f60e77a8301f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/GPTViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/GPTViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/data/DataStoreManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/data/DataStoreManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/utils/PreferenceKeys.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/utils/PreferenceKeys.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +56,9 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Proof-Concept-AI",
+    "git-widget-placeholder": "BackEnd",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/jhmic/OneDrive - John Abbott College/.Main/Semester5/AppDev/FutureFit/FutureFitApp",
+    "last_opened_file_path": "C:/Users/LiamJ/AndroidStudioProjects/FutureFit/FutureFitApp",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.2"
@@ -126,9 +128,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
       <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
+      <method v="2" />
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

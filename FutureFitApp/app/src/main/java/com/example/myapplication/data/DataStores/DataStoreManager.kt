@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package com.example.myapplication.data.DataStores
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -18,6 +18,10 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
+    suspend fun saveFontSize(fontSize: Int){
+        context.dataStore.edit { preferences -> preferences[PreferencesKeys.FONT_SIZE] = fontSize}
+    }
+
     val darkModeFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.DARK_MODE] ?: false
         }
@@ -25,4 +29,7 @@ class DataStoreManager(private val context: Context) {
     val metricSystemFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.METRIC_SYSTEM] ?: false
         }
+
+    val fontSizeFlow: Flow<Int> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.FONT_SIZE] ?: 12}
 }
