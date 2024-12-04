@@ -10,11 +10,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
+    //private val repository: Repository
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
     //#region Fields
     // ADD DATABASE CONNECTION
-    private val repository: String = ""
+    private val _userId: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _userName: MutableStateFlow<String> = MutableStateFlow("")
+    private val _userEmail: MutableStateFlow<String> = MutableStateFlow("")
     private var _darkTheme = MutableStateFlow(false)
     private var _metricSystem = MutableStateFlow(false)
     private var _fontSize = MutableStateFlow(12)
@@ -29,6 +32,9 @@ class SettingsViewModel(
     //#region Constructor
     init {
         viewModelScope.launch {
+            _userId.value = dataStoreManager.userIdFlow.first()
+            _userName.value = dataStoreManager.userNameFlow.first()
+            _userEmail.value = dataStoreManager.userEmailFlow.first()
             _darkTheme.value = dataStoreManager.darkModeFlow.first()
             _metricSystem.value = dataStoreManager.metricSystemFlow.first()
             _fontSize.value = dataStoreManager.fontSizeFlow.first()

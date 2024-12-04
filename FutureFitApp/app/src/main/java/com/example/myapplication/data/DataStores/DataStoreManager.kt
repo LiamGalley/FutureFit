@@ -22,6 +22,23 @@ class DataStoreManager(private val context: Context) {
         context.dataStore.edit { preferences -> preferences[PreferencesKeys.FONT_SIZE] = fontSize}
     }
 
+    suspend fun saveUserName(userName: String){
+        context.dataStore.edit { preferences -> preferences[PreferencesKeys.USER_NAME] = userName }
+    }
+
+    suspend fun saveUserEmail(userEmail: String){
+        context.dataStore.edit { preferences -> preferences[PreferencesKeys.USER_EMAIL] = userEmail }
+    }
+
+    val userIdFlow: Flow<Int> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.USER_ID] ?: 0}
+
+    val userEmailFlow: Flow<String> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.USER_EMAIL] ?: ""}
+
+    val userNameFlow: Flow<String> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.USER_NAME] ?: ""}
+
     val darkModeFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.DARK_MODE] ?: false
         }
