@@ -23,15 +23,6 @@ import com.example.myapplication.data.Repository
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.theme.navigation.NavigationContent
 
-sealed class NavDestination(val title: String, val route: String, val icon: ImageVector)
-{
-    object Home: NavDestination(title="Home",route="home_screen",icon= Icons.Default.Home)
-    object Workouts: NavDestination(title="Workouts",route="workouts",icon= Icons.Default.List)
-    object Other: NavDestination(title="Other",route="other",icon= Icons.Default.Info)
-    object Settings: NavDestination(title="Settings",route="settings",icon= Icons.Default.Settings)
-}
-
-
 class MainActivity : ComponentActivity() {
 
     // Instanciate the db
