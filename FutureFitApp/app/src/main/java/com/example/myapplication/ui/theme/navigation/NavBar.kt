@@ -1,23 +1,10 @@
 package com.example.myapplication.ui.theme.navigation
 
-import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -26,44 +13,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.GPTViewModel
-import com.example.myapplication.data.AnotherViewModel
-import com.example.myapplication.ui.theme.screens.ClickableContainer
+import com.example.myapplication.data.ViewModels.GPTViewModel
+import com.example.myapplication.data.Database.AnotherViewModel
 import com.example.myapplication.ui.theme.screens.DisplayWorkouts
 import com.example.myapplication.ui.theme.screens.HomeScreen
 import com.example.myapplication.ui.theme.screens.LoginScreen
-import com.example.myapplication.ui.theme.screens.ProfileScreen
 import com.example.myapplication.ui.theme.screens.SettingScreen
 import com.example.myapplication.ui.theme.screens.WorkoutDetailsScreen
 import com.example.myapplication.ui.theme.screens.WorkoutSelectionPage
-import com.example.myapplication.ui.theme.screens.tempProfilScreen
 import com.example.myapplication.ui.theme.screens.workouts
-import kotlin.getValue
 
-sealed class NavDestination(val title: String, val route: String, val icon: ImageVector)
-{
-    object Home: NavDestination(title="Home",route="home_screen",icon= Icons.Default.Home)
-    object CreateWorkout: NavDestination(title="Create Workout",route="createworkout",icon= Icons.Default.Create)
-    object Workouts: NavDestination(title="Workouts",route="workouts",icon= Icons.Default.List)
-    object Other: NavDestination(title="Other",route="other",icon= Icons.Default.Info)
-    object Settings: NavDestination(title="Settings",route="settings",icon= Icons.Default.Settings)
-}
-
+//#region SAMPLE DATA (DELETE WHEN IMPLEMENTING DATABASE)
 data class User(
     val id: Int,
     val firstName: String,
@@ -102,13 +73,13 @@ val sampleUsers = listOf(
         createdAt = "2024-01-08T11:00:00Z"
     )
 )
+//#endregion
 
 @Composable
-fun NavigationContent(dbViewModel: AnotherViewModel) {
-    val navController = rememberNavController()
-    val items = listOf(
-        NavDestination.Home, NavDestination.CreateWorkout ,NavDestination.Workouts, NavDestination.Settings
-    )
+fun NavigationContent(
+    navController: NavHostController,
+    dbViewModel: AnotherViewModel
+) {
     var isRegistrationValid by remember { mutableStateOf(false)}
     var idUser by remember { mutableStateOf(sampleUsers[0])}
 
@@ -118,7 +89,7 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
-                    items.forEach { screen ->
+                    appScreens.forEach { screen ->
                         NavigationBarItem(
                             icon = {
                                 Icon(imageVector = screen.icon, contentDescription = null)
@@ -140,8 +111,9 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
             }
         }
     ) { innerPadding ->
-        NavHost(navController = navController,
-            startDestination = if (isRegistrationValid) NavDestination.Home.route else "register_screen",
+        NavHost(
+            navController = navController,
+            startDestination = if (isRegistrationValid) Home.route else "register_screen",
             modifier = Modifier.padding(innerPadding)){
 
             composable(route = "register_screen") {
@@ -149,14 +121,14 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
                     onRegistrationSuccess = {
                         isRegistrationValid = true
                         idUser = it
-                        navController.navigate(NavDestination.Home.route) {
+                        navController.navigate(Home.route) {
                             popUpTo("register_screen") { inclusive = true }
                         }
                     }
                 )
             }
 
-            composable(route = NavDestination.Home.route) {
+            composable(route = Home.route) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -167,7 +139,7 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
                 }
             }
 
-            composable(route = NavDestination.Workouts.route) {
+            composable(route = WorkoutHistory.route) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -187,7 +159,7 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
                 }
             }
 
-            composable(route = NavDestination.CreateWorkout.route) {
+            composable(route = WorkoutCreation.route) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Top,
@@ -197,7 +169,7 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
                 }
             }
 
-            composable(route = NavDestination.Other.route) {
+            composable(route = Other.route) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Top,
@@ -207,7 +179,7 @@ fun NavigationContent(dbViewModel: AnotherViewModel) {
                 }
             }
 
-            composable(route = NavDestination.Settings.route) {
+            composable(route = Settings.route) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,

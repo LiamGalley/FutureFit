@@ -1,11 +1,6 @@
-package com.example.myapplication.data
+package com.example.myapplication.data.Database
 
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.RoomDatabase
-import androidx.room.Upsert
 import com.example.myapplication.data.Entities.Account
-import kotlinx.coroutines.flow.Flow
 
 class Repository(
     private val db: AppDatabase
