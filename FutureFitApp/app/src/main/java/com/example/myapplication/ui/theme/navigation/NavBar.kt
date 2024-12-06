@@ -24,8 +24,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.myapplication.data.ViewModels.DatabaseViewModel
 import com.example.myapplication.data.ViewModels.GPTViewModel
-import com.example.myapplication.data.Database.AnotherViewModel
 import com.example.myapplication.ui.theme.screens.DisplayWorkouts
 import com.example.myapplication.ui.theme.screens.HomeScreen
 import com.example.myapplication.ui.theme.screens.LoginScreen
@@ -78,7 +78,7 @@ val sampleUsers = listOf(
 @Composable
 fun NavigationContent(
     navController: NavHostController,
-    dbViewModel: AnotherViewModel
+    dbViewModel: DatabaseViewModel
 ) {
     var isRegistrationValid by remember { mutableStateOf(false)}
     var idUser by remember { mutableStateOf(sampleUsers[0])}

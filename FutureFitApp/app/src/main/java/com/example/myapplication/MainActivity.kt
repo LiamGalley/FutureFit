@@ -13,9 +13,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.myapplication.data.Database.AnotherViewModel
 import com.example.myapplication.data.Database.AppDatabase
 import com.example.myapplication.data.Database.Repository
+import com.example.myapplication.data.ViewModels.DatabaseViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.theme.navigation.NavigationContent
 
@@ -23,9 +23,9 @@ class MainActivity : ComponentActivity() {
     private val db by lazy { Room.databaseBuilder(applicationContext, AppDatabase::class.java,
         "account.db").build() }
 
-    private val dbViewModel by viewModels<AnotherViewModel> (
+    private val dbViewModel by viewModels<DatabaseViewModel> (
         factoryProducer = { object : ViewModelProvider.Factory{ override fun <T : ViewModel>
-                create(modelClass: Class<T>): T { return AnotherViewModel(Repository(db)) as T } } }
+                create(modelClass: Class<T>): T { return DatabaseViewModel(Repository(db)) as T } } }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FutureFitApp(
-    dbViewModel: AnotherViewModel
+    dbViewModel: DatabaseViewModel
 ){
     val darkMode = false
 

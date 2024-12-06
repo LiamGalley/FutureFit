@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
+    //private val repository: Repository
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
-    private val repository: String = ""
     private var _darkTheme = MutableStateFlow(false)
     private var _metricSystem = MutableStateFlow(false)
 
