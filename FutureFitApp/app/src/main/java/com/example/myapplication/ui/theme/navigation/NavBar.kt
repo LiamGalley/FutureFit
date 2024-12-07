@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,16 +37,6 @@ import com.example.myapplication.ui.theme.screens.LoginScreen
 import com.example.myapplication.ui.theme.screens.SettingScreen
 import com.example.myapplication.ui.theme.screens.WorkoutDetailsScreen
 import com.example.myapplication.ui.theme.screens.WorkoutSelectionPage
-import com.example.myapplication.ui.theme.screens.workouts
-
-//#region SAMPLE DATA (DELETE WHEN IMPLEMENTING DATABASE)
-data class User(
-    val id: Int,
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val createdAt: String
-)
 
 @Composable
 fun NavigationContent(
@@ -61,10 +52,11 @@ fun NavigationContent(
 //        date = System.currentTimeMillis(),
 //        duration = 30,
 //        intensity = "Medium",
-//        accountId = 1
+//        accountId = 14
 //    )
 //    dbViewModel.upsertWorkout(workout)
-//    dbViewModel.upsertExercise(Exercise(name = "test", workoutId = 1))
+//    dbViewModel.upsertExercise(Exercise(name = "test", workoutId = 4))
+//    dbViewModel.upsertExercise(Exercise(name ="test", workoutId = 4))
 
     var isRegistrationValid by remember { mutableStateOf(false)}
     var idUser by remember { mutableStateOf(Account("r","r","r","r"))}
@@ -121,7 +113,7 @@ fun NavigationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     val gptViewModel: GPTViewModel = viewModel()
-                    //HomeScreen(navController = navController, gptViewModel = gptViewModel)
+                    HomeScreen(navController = navController,dbViewModel, idUser, gptViewModel = gptViewModel)
                     Text(text = "It fucking works", fontSize = 30.sp)
                 }
             }
@@ -132,18 +124,27 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-//                    DisplayWorkouts({ workout ->
-//                        navController.navigate("workoutDetails/${workout.name}")
-//                    })
+                    val workoutList by dbViewModel.getWorkoutByAccountId(idUser.id).observeAsState(emptyList())
+
+                    DisplayWorkouts(workoutList) { workout ->
+                        navController.navigate("workoutDetails/${workout.workoutId}")
+                    }
                 }
             }
 
-            composable("workoutDetails/{name}") { backStackEntry ->
-                val workoutName = backStackEntry.arguments?.getString("name") ?: ""
-                val selectedWorkout = workouts.find { it.name == workoutName }
-                if (selectedWorkout != null) {
-                    WorkoutDetailsScreen(selectedWorkout) { navController.popBackStack() }
+            composable("workoutDetails/{workoutId}") { backStackEntry ->
+                val workoutName = backStackEntry.arguments?.getString("workoutId") ?: ""
+                val id: Int = workoutName.toInt()
+                val workout by dbViewModel.getWorkoutById(id).observeAsState()
+                val selectedWorkout = workout
+
+
+                selectedWorkout?.let {
+                    WorkoutDetailsScreen(it, dbViewModel) {
+                        navController.popBackStack()
+                    }
                 }
+
             }
 
             composable(route = WorkoutCreation.route) {
@@ -152,7 +153,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //WorkoutSelectionPage()
+                    WorkoutSelectionPage()
                 }
             }
 
@@ -172,7 +173,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //SettingScreen(idUser)
+                    SettingScreen(idUser)
                 }
             }
 

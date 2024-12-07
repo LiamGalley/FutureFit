@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["account_id"])]  // Add index on account_id
+    indices = [Index(value = ["account_id"])]
 )
 data class Workout(
     @PrimaryKey(autoGenerate = true)

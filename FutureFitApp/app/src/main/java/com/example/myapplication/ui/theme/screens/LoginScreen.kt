@@ -35,7 +35,6 @@ import com.example.myapplication.R
 import com.example.myapplication.data.Database.AnotherViewModel
 import com.example.myapplication.data.Entities.Account
 import com.example.myapplication.data.Entities.Workout
-import com.example.myapplication.ui.theme.navigation.User
 
 @Composable
 fun LoginScreen(dbViewModel: AnotherViewModel, onRegistrationSuccess:(value: Account)->Unit){
@@ -91,12 +90,11 @@ fun Login(callBack:()->Unit,onRegistrationSuccess:(value: Account)->Unit,dbViewM
 
     var current = LocalContext.current
 
-    val accountList = dbViewModel.getAccountByEmail(email).observeAsState(emptyList())
+    val accountList by dbViewModel.getAccountByEmail(email).observeAsState(emptyList())
 
     Button(onClick = {
-        var check = false
 
-        val account = accountList.value.firstOrNull()
+        val account = accountList.firstOrNull()
 
         if (account != null && account.password == password && account.emailAddress == email) {
             onRegistrationSuccess(account)
@@ -159,8 +157,6 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
             dbViewModel.upsertAccountFromUI(Account(firstName, lastName, email, password)) { newAccount ->
                    onRegistrationSuccess(newAccount)
             }
-
-            //var account: Account = dbViewModel.upsertAccount(Account(firstName, lastName, email, password))
 
         } else {
             Toast.makeText(current, "Please create a valid user", Toast.LENGTH_SHORT).show()

@@ -13,7 +13,11 @@ class AnotherViewModel(
 ): ViewModel() {
     fun getAccountByEmail(email: String) = repository.getAccountByEmail(email).asLiveData(viewModelScope.coroutineContext)
 
+    fun getWorkoutById(id:Int) = repository.getWorkoutById(id).asLiveData(viewModelScope.coroutineContext)
+
     fun getWorkoutByAccountId(id: Int) = repository.getWorkoutByAccountById(id).asLiveData(viewModelScope.coroutineContext)
+
+    fun getExerciseByWorkoutId(id: Int) = repository.getExercisesByWorkoutId(id).asLiveData(viewModelScope.coroutineContext)
 
     fun upsertAccount(account: Account): Account{
         var newAccount: Account = Account("","","","")

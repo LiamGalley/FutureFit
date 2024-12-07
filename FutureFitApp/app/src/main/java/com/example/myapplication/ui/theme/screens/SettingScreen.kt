@@ -22,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.ui.theme.navigation.User
+import com.example.myapplication.data.Entities.Account
 
 @Composable
-fun SettingScreen(user: User){
+fun SettingScreen(user: Account){
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -50,7 +50,7 @@ fun SettingScreen(user: User){
             }
         )
 
-        Text(text = user.email)
+        Text(text = user.emailAddress)
 
         Spacer(modifier = Modifier.height(16.dp))
 

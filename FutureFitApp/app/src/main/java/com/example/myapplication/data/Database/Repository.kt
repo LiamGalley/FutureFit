@@ -3,6 +3,7 @@ package com.example.myapplication.data.Database
 import com.example.myapplication.data.Entities.Account
 import com.example.myapplication.data.Entities.Workout
 import com.example.myapplication.data.Entities.Exercise
+import kotlinx.coroutines.flow.Flow
 
 class Repository(
     private val db: AppDatabase
@@ -30,6 +31,8 @@ class Repository(
         db.WorkoutDao.deleteWorkout(workout)
     }
 
+    fun getWorkoutById(id: Int) = db.WorkoutDao.getWorkoutById(id)
+
     fun getWorkoutByAccountById(accountId: Int) = db.WorkoutDao.getWorkoutByAccountById(accountId)
 
     suspend fun upsertExercise(exercise: Exercise) {
@@ -41,7 +44,7 @@ class Repository(
         db.ExerciseDao.deleteExercise(exercise)
     }
 
-    fun getExercisesByWorkoutId(workoutId: Int) = db.ExerciseDao.getExercisesByWorkoutId( workoutId)
+    fun getExercisesByWorkoutId(workoutId: Int) = db.ExerciseDao.getExercisesByWorkoutId(workoutId)
 
 
 }
