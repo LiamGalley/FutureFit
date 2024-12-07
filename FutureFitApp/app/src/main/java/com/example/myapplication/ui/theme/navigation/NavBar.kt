@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -26,6 +27,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.myapplication.data.ViewModels.GPTViewModel
 import com.example.myapplication.data.Database.AnotherViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Workout
+import com.example.myapplication.data.Entities.Exercise
 import com.example.myapplication.ui.theme.screens.DisplayWorkouts
 import com.example.myapplication.ui.theme.screens.HomeScreen
 import com.example.myapplication.ui.theme.screens.LoginScreen
@@ -43,45 +47,27 @@ data class User(
     val createdAt: String
 )
 
-val sampleUsers = listOf(
-    User(
-        id = 1,
-        firstName = "Alice",
-        lastName = "Johnson",
-        email = "alice.johnson@example.com",
-        createdAt = "2024-01-05T08:30:00Z"
-    ),
-    User(
-        id = 2,
-        firstName = "Bob",
-        lastName = "Smith",
-        email = "bob.smith@example.com",
-        createdAt = "2024-01-06T09:45:00Z"
-    ),
-    User(
-        id = 3,
-        firstName = "Charlie",
-        lastName = "Lee",
-        email = "charlie.lee@example.com",
-        createdAt = "2024-01-07T10:15:00Z"
-    ),
-    User(
-        id = 4,
-        firstName = "Diana",
-        lastName = "Garcia",
-        email = "diana.garcia@example.com",
-        createdAt = "2024-01-08T11:00:00Z"
-    )
-)
-//#endregion
-
 @Composable
 fun NavigationContent(
     navController: NavHostController,
     dbViewModel: AnotherViewModel
 ) {
+
+//    dbViewModel.upsertAccount(Account(firstName = "Alice",
+//        lastName = "Johnson",
+//        emailAddress = "alice.johnson@example.com", password = "works"))
+//    val workout = Workout(
+//        name = "Morning Cardio",
+//        date = System.currentTimeMillis(),
+//        duration = 30,
+//        intensity = "Medium",
+//        accountId = 1
+//    )
+//    dbViewModel.upsertWorkout(workout)
+//    dbViewModel.upsertExercise(Exercise(name = "test", workoutId = 1))
+
     var isRegistrationValid by remember { mutableStateOf(false)}
-    var idUser by remember { mutableStateOf(sampleUsers[0])}
+    var idUser by remember { mutableStateOf(Account("r","r","r","r"))}
 
     Scaffold(
         bottomBar = {
@@ -117,7 +103,7 @@ fun NavigationContent(
             modifier = Modifier.padding(innerPadding)){
 
             composable(route = "register_screen") {
-                LoginScreen(
+                LoginScreen(dbViewModel,
                     onRegistrationSuccess = {
                         isRegistrationValid = true
                         idUser = it
@@ -135,7 +121,8 @@ fun NavigationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     val gptViewModel: GPTViewModel = viewModel()
-                    HomeScreen(navController = navController, gptViewModel = gptViewModel)
+                    //HomeScreen(navController = navController, gptViewModel = gptViewModel)
+                    Text(text = "It fucking works", fontSize = 30.sp)
                 }
             }
 
@@ -145,9 +132,9 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    DisplayWorkouts({ workout ->
-                        navController.navigate("workoutDetails/${workout.name}")
-                    })
+//                    DisplayWorkouts({ workout ->
+//                        navController.navigate("workoutDetails/${workout.name}")
+//                    })
                 }
             }
 
@@ -165,7 +152,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WorkoutSelectionPage()
+                    //WorkoutSelectionPage()
                 }
             }
 
@@ -185,7 +172,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    SettingScreen(idUser)
+                    //SettingScreen(idUser)
                 }
             }
 

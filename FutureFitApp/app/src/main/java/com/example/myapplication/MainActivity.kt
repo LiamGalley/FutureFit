@@ -21,7 +21,8 @@ import com.example.myapplication.ui.theme.navigation.NavigationContent
 
 class MainActivity : ComponentActivity() {
     private val db by lazy { Room.databaseBuilder(applicationContext, AppDatabase::class.java,
-        "account.db").build() }
+        "test.db").build() }
+
 
     private val dbViewModel by viewModels<AnotherViewModel> (
         factoryProducer = { object : ViewModelProvider.Factory{ override fun <T : ViewModel>
@@ -41,6 +42,8 @@ fun FutureFitApp(
     dbViewModel: AnotherViewModel
 ){
     val darkMode = false
+
+
 
     MyApplicationTheme(darkMode) {
         val navController = rememberNavController()
