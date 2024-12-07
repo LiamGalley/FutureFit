@@ -18,7 +18,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    suspend fun saveFontSize(fontSize: Int){
+    suspend fun saveFontSize(fontSize: Boolean){
         context.dataStore.edit { preferences -> preferences[PreferencesKeys.FONT_SIZE] = fontSize}
     }
 
@@ -40,13 +40,11 @@ class DataStoreManager(private val context: Context) {
         .map { preferences -> preferences[PreferencesKeys.USER_NAME] ?: ""}
 
     val darkModeFlow: Flow<Boolean> = context.dataStore.data
-        .map { preferences -> preferences[PreferencesKeys.DARK_MODE] ?: false
-        }
+        .map { preferences -> preferences[PreferencesKeys.DARK_MODE] ?: false }
 
     val metricSystemFlow: Flow<Boolean> = context.dataStore.data
-        .map { preferences -> preferences[PreferencesKeys.METRIC_SYSTEM] ?: false
-        }
+        .map { preferences -> preferences[PreferencesKeys.METRIC_SYSTEM] ?: false }
 
-    val fontSizeFlow: Flow<Int> = context.dataStore.data
-        .map { preferences -> preferences[PreferencesKeys.FONT_SIZE] ?: 12}
+    val fontSizeFlow: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.FONT_SIZE] ?: false }
 }

@@ -15,14 +15,17 @@ class SettingsViewModel(
 ) : ViewModel() {
     private var _darkTheme = MutableStateFlow(false)
     private var _metricSystem = MutableStateFlow(false)
+    private var _largeFontSize = MutableStateFlow(false)
 
     var darkTheme: StateFlow<Boolean> = _darkTheme.asStateFlow()
     var metricSystem: StateFlow<Boolean> = _metricSystem.asStateFlow()
+    var largeFontSize: StateFlow<Boolean> = _largeFontSize.asStateFlow()
 
     init {
         viewModelScope.launch {
             _darkTheme.value = dataStoreManager.darkModeFlow.first()
             _metricSystem.value = dataStoreManager.metricSystemFlow.first()
+            _largeFontSize.value = dataStoreManager.fontSizeFlow.first()
         }
     }
 
@@ -41,6 +44,15 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.saveMeasurementSystem(system)
             _metricSystem.value = system
+        }
+    }
+
+    fun toggleLargeFontSize(){
+        val system = !_largeFontSize.value
+
+        viewModelScope.launch {
+            dataStoreManager.saveFontSize(system)
+            _largeFontSize.value = system
         }
     }
 }

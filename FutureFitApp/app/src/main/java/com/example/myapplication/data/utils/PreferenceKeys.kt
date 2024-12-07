@@ -14,5 +14,5 @@ object PreferencesKeys {
     // Settings Preferences
     val DARK_MODE = booleanPreferencesKey("dark_mode")
     val METRIC_SYSTEM = booleanPreferencesKey("metric_system")
-    val FONT_SIZE = intPreferencesKey("font_size")
+    val FONT_SIZE = booleanPreferencesKey("font_size")
 }
