@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e2055bda-2450-4fcc-bc89-f60e77a8301f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/ThemeSwitcher.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/data/ViewModels/DatabaseViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/data/ViewModels/DatabaseViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/navigation/NavBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/navigation/NavBar.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/screens/SettingScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/screens/SettingScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Color.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Theme.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Theme.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Type.kt" afterDir="false" />
-    </list>
+    <list default="true" id="e2055bda-2450-4fcc-bc89-f60e77a8301f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,6 +20,11 @@
     </projectState>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Liam-ViewModel-M5" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -42,7 +36,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/LiamGalley/FutureFit.git&quot;,
-    &quot;accountId&quot;: &quot;dbe2307b-e967-4de8-86a1-a3050bb50afb&quot;
+    &quot;accountId&quot;: &quot;50f5defe-9a8b-459a-bd08-916355e715cf&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -62,9 +56,9 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Liam-ViewModel-M5",
+    "git-widget-placeholder": "Ai-workout-implementation",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/LiamJ/AndroidStudioProjects/FutureFit/FutureFitApp",
+    "last_opened_file_path": "C:/Users/jhmic/OneDrive - John Abbott College/.Main/Semester5/AppDev/FutureFitv3/FutureFitApp",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.2"

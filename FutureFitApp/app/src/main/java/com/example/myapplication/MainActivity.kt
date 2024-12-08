@@ -19,8 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.myapplication.data.DataStores.DataStoreManager
 import com.example.myapplication.data.Database.AppDatabase
+import com.example.myapplication.data.Database.DatabaseViewModel
 import com.example.myapplication.data.Database.Repository
-import com.example.myapplication.data.ViewModels.DatabaseViewModel
 import com.example.myapplication.data.ViewModels.HomeViewModel
 import com.example.myapplication.data.ViewModels.ProfileViewModel
 import com.example.myapplication.data.ViewModels.SettingsViewModel
@@ -29,7 +29,8 @@ import com.example.myapplication.ui.theme.navigation.NavigationContent
 
 class MainActivity : ComponentActivity() {
     private val db by lazy { Room.databaseBuilder(applicationContext, AppDatabase::class.java,
-        "account.db").build() }
+        "final.db").build() }
+
 
     private val dbViewModel by viewModels<DatabaseViewModel> (
         factoryProducer = { object : ViewModelProvider.Factory{ override fun <T : ViewModel>

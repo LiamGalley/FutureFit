@@ -6,10 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "account")
 data class Account(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "account_id")
-    val accountId: Int = 0,
-
     @ColumnInfo(name = "first_name")
     val firstName: String,
 
@@ -23,20 +19,21 @@ data class Account(
     val password: String,
 
     @ColumnInfo(name = "height")
-    val height: String,
+    val height: Double,
 
     @ColumnInfo(name = "weight")
-    val weight: String,
-
-    @ColumnInfo(name = "body_fat")
-    val bodyFat: Double,
-
-    @ColumnInfo(name = "activity_level")
-    val activityLevel: Int,
+    val weight: Double,
 
     @ColumnInfo(name = "age")
     val age: Int,
 
-    @ColumnInfo(name = "gender")
-    val gender: String,
+    @ColumnInfo(name = "activity_level")
+    val activityLevel: Int,
+
+    @ColumnInfo(name = "body_fat")
+    val bodyFat: Int,
+
+    @PrimaryKey
+    (autoGenerate = true)
+    val id: Int = 0,
 )

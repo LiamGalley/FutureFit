@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,7 +25,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.myapplication.data.ViewModels.DatabaseViewModel
+import com.example.myapplication.data.Database.DatabaseViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Workout
 import com.example.myapplication.data.ViewModels.GPTViewModel
 import com.example.myapplication.data.ViewModels.HomeViewModel
 import com.example.myapplication.data.ViewModels.ProfileViewModel
@@ -36,7 +39,7 @@ import com.example.myapplication.ui.theme.screens.LoginScreen
 import com.example.myapplication.ui.theme.screens.SettingScreen
 import com.example.myapplication.ui.theme.screens.WorkoutDetailsScreen
 import com.example.myapplication.ui.theme.screens.WorkoutSelectionPage
-import com.example.myapplication.ui.theme.screens.workouts
+import java.time.Instant
 
 //#region SAMPLE DATA (DELETE WHEN IMPLEMENTING DATABASE)
 data class User(
@@ -78,7 +81,9 @@ fun NavigationContent(
     trainingViewModel: TrainingViewModel
 ) {
     var isRegistrationValid by remember { mutableStateOf(false)}
-    var idUser by remember { mutableStateOf(sampleUsers[0])}
+    var idUser by remember { mutableStateOf(Account("r","r","r","r",
+        activityLevel = 0, age = 0, bodyFat = 0, height = 0.0, weight = 0.0))}
+    val gptViewModel: GPTViewModel = viewModel()
 
     Scaffold(
         bottomBar = {
@@ -114,7 +119,7 @@ fun NavigationContent(
             modifier = Modifier.padding(innerPadding)){
 
             composable(route = "register_screen") {
-                LoginScreen(
+                LoginScreen(dbViewModel,
                     onRegistrationSuccess = {
                         isRegistrationValid = true
                         idUser = it
@@ -131,8 +136,8 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val gptViewModel: GPTViewModel = viewModel()
-                    HomeScreen(navController = navController, gptViewModel = gptViewModel)
+                    HomeScreen(navController = navController, dbViewModel, idUser,
+                        gptViewModel = gptViewModel)
                 }
             }
 
@@ -142,18 +147,23 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    DisplayWorkouts({ workout ->
-                        navController.navigate("workoutDetails/${workout.name}")
-                    })
+                    val workoutList by dbViewModel.getWorkoutByAccountId(idUser.id).observeAsState(emptyList())
+
+                    DisplayWorkouts(workoutList) { workout ->
+                        navController.navigate("workoutDetails/${workout.workoutId}") }
                 }
             }
 
-            composable("workoutDetails/{name}") { backStackEntry ->
-                val workoutName = backStackEntry.arguments?.getString("name") ?: ""
-                val selectedWorkout = workouts.find { it.name == workoutName }
-                if (selectedWorkout != null) {
-                    WorkoutDetailsScreen(selectedWorkout) { navController.popBackStack() }
-                }
+            composable("workoutDetails/{workoutId}") { backStackEntry ->
+                val workoutName = backStackEntry.arguments?.getString("workoutId") ?: ""
+                val id: Int = workoutName.toInt()
+                val workout by dbViewModel.getWorkoutById(id).observeAsState()
+                val selectedWorkout = workout
+
+
+                selectedWorkout?.let {
+                    WorkoutDetailsScreen(it, dbViewModel) {
+                        navController.popBackStack() } }
             }
 
             composable(route = WorkoutCreation.route) {
@@ -163,6 +173,11 @@ fun NavigationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     WorkoutSelectionPage(
+                        navController,
+                        idUser,
+                        dbViewModel,
+                        gptViewModel,
+
                         settingsViewModel.height,
                         settingsViewModel.weight,
                         profileViewModel.age,

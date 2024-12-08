@@ -28,10 +28,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.myapplication.data.Database.DatabaseViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Exercise
+import com.example.myapplication.data.Entities.Workout
+import com.example.myapplication.data.ViewModels.GPTViewModel
+import com.example.myapplication.ui.theme.navigation.WorkoutHistory
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutSelectionPage(
+    navController: NavController,
+    user: Account,
+    dbViewModel: DatabaseViewModel,
+    gptViewModel: GPTViewModel,
     height: StateFlow<Double>,
     weight: StateFlow<Double>,
     age: Int,
@@ -142,23 +156,64 @@ fun WorkoutSelectionPage(
         // Generate Program Button
         Button(
             onClick = {
-                // Call API to generate workout program based on the user input
                 if (weight.isNotEmpty() && height.isNotEmpty() && age.isNotEmpty()) {
                     try {
                         val weightInt = weight.toInt()
                         val heightInt = height.toInt()
                         val ageInt = age.toInt()
 
+                        val workoutQuery = """
+                    Give me a workout plan using these information: $ageInt, ${user.bodyFat}, $weightInt, $heightInt, $selectedMuscleGroup. 
+                    The output needs to be <TitleOfMuscleWorkout>, <duration in minutes>, <Intensity either Low, Medium, High>, 
+                    <Exercises 3-5 only their names>. The output is a string comma separated with no spaces after the commas.
+                """.trimIndent()
+
+                        gptViewModel.viewModelScope.launch {
+                            val response = gptViewModel.fetchGPTResponse(workoutQuery)
+
+                            val responseData: List<String> = response.split(", ")
+                            if (responseData.size >= 3) {
+                                dbViewModel.upsertWorkoutFromUI(
+                                    Workout(
+                                        name = responseData[0],
+                                        date = System.currentTimeMillis(),
+                                        duration = responseData[1].toInt(),
+                                        intensity = responseData[2],
+                                        accountId = user.id
+                                    )
+                                ){
+                                        newWorkout ->
+                                    val newResponse: List<String> = responseData.slice(3..(responseData.count() - 1))
+                                    newResponse.forEach { exercise ->
+                                        dbViewModel.upsertExercise(Exercise(name = exercise, workoutId = newWorkout.workoutId))
+                                    }
+                                }
+
+                                navController.navigate(WorkoutHistory.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+
+
+                            } else {
+                                Toast.makeText(
+                                    current,
+                                    "Invalid response from GPT.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     } catch (e: NumberFormatException) {
-                        // Handle invalid input
                         Toast.makeText(
                             current,
                             "Please enter valid numbers for weight, height, and age.",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(
                         current,
                         "Please fill in all fields.",
@@ -167,7 +222,8 @@ fun WorkoutSelectionPage(
                 }
             }
         ) {
-            Text("Generate Workout Program")
+            Text(text = "Generate Workout Program")
         }
+
     }
 }

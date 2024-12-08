@@ -15,36 +15,28 @@ import com.aallam.openai.client.OpenAI
 
 class GPTViewModel : ViewModel() {
     var gptResponse by mutableStateOf("")
-    //Where you can change the sent query
-    var gptQuery = mutableStateOf("")
 
     private val openAI = OpenAI(
-        "API-KEY-HERE"
+        "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"
     )
 
     @OptIn(BetaOpenAI::class)
-    fun fetchGPTResponse() {
-        viewModelScope.launch {
-            try {
-                val chatCompletionRequest = ChatCompletionRequest(
-                    model = ModelId("gpt-4o-mini"),
-                    messages = listOf(
-                        ChatMessage(
-                            role = ChatRole.User,
-                            content = gptQuery.value
-                        )
+    suspend fun fetchGPTResponse(query: String): String {
+        return try {
+            val chatCompletionRequest = ChatCompletionRequest(
+                model = ModelId("gpt-4o-mini"),
+                messages = listOf(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = query
                     )
                 )
-
-                val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
-                gptResponse = completion.choices.first().message?.content ?: ""
-            } catch (e: Exception) {
-                gptResponse = "ERROR: ${e.cause?.message ?: "Unknown error"}"
-            }
+            )
+            val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
+            completion.choices.first().message?.content ?: ""
+        } catch (e: Exception) {
+            "ERROR: ${e.message ?: "Unknown error"}"
         }
     }
 
-    fun setQuery(query: String) {
-        gptQuery.value = query
-    }
 }
