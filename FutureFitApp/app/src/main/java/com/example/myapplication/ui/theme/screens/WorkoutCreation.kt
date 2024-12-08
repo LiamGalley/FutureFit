@@ -19,6 +19,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ fun WorkoutSelectionPage(
     age: Int,
     bodyFat: Double,
     activityLevel: Int,
+    metricSystem: StateFlow<Boolean>,
     initializeFromDb: () -> Unit,
 ) {
     initializeFromDb()
@@ -81,21 +83,40 @@ fun WorkoutSelectionPage(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.align(Alignment.Start))
 
-        // Weight input
-        TextField(
-            value = weight,
-            onValueChange = { weight = it },
-            label = { Text("Weight (kg)") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
+        if (metricSystem.collectAsState().value){
+            // Weight input
+            TextField(
+                value = weight,
+                onValueChange = { weight = it },
+                label = { Text("Weight (kg)") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
 
-        // Height input
-        TextField(
-            value = height,
-            onValueChange = { height = it },
-            label = { Text("Height (cm)") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
+            // Height input
+            TextField(
+                value = height,
+                onValueChange = { height = it },
+                label = { Text("Height (cm)") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
+        } else{
+            // Weight input
+            TextField(
+                value = weight,
+                onValueChange = { weight = it },
+                label = { Text("Weight (Lbs)") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
+
+            // Height input
+            TextField(
+                value = height,
+                onValueChange = { height = it },
+                label = { Text("Height (ft)") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
+        }
+
 
         // Age input
         TextField(

@@ -182,6 +182,7 @@ fun NavigationContent(
                         profileViewModel.age,
                         profileViewModel.bodyFat,
                         profileViewModel.activityLevel,
+                        settingsViewModel.metricSystem,
                         { profileViewModel.initializeFromDb(idUser) }
                     )
                 }
