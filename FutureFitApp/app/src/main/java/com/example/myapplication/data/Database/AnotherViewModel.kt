@@ -19,13 +19,13 @@ class AnotherViewModel(
 
     fun getExerciseByWorkoutId(id: Int) = repository.getExercisesByWorkoutId(id).asLiveData(viewModelScope.coroutineContext)
 
-    fun upsertAccount(account: Account): Account{
-        var newAccount: Account = Account("","","","")
-        viewModelScope.launch {
-            newAccount = repository.upsertAccount(account)
-        }
-        return newAccount
-    }
+//    fun upsertAccount(account: Account): Account{
+//        var newAccount: Account = Account("","","","")
+//        viewModelScope.launch {
+//            newAccount = repository.upsertAccount(account)
+//        }
+//        return newAccount
+//    }
 
     fun upsertAccountFromUI(account: Account, onSuccess: (Account) -> Unit) {
         viewModelScope.launch {

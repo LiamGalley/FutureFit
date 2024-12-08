@@ -18,6 +18,21 @@ data class Account(
     @ColumnInfo(name = "password")
     val password: String,
 
+    @ColumnInfo(name = "height")
+    val height: Double,
+
+    @ColumnInfo(name = "weight")
+    val weight: Double,
+
+    @ColumnInfo(name = "age")
+    val age: Int,
+
+    @ColumnInfo(name = "activity_level")
+    val activityLevel: Int,
+
+    @ColumnInfo(name = "body_fat")
+    val bodyFat: Int,
+
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 )

@@ -10,13 +10,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,8 +44,10 @@ import com.example.myapplication.data.Entities.Workout
 fun LoginScreen(dbViewModel: AnotherViewModel, onRegistrationSuccess:(value: Account)->Unit){
 
     var login by remember { mutableStateOf(true) }
+    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -122,6 +128,11 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var height by remember { mutableStateOf("")  }
+    var weight by remember { mutableStateOf("")  }
+    var age by remember { mutableStateOf("")  }
+    var bodyFat by remember { mutableStateOf("")  }
+    var activityLevel by remember { mutableStateOf("") }
 
     Text(text = "Hi!", fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
@@ -143,6 +154,26 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
 
     Spacer(modifier = Modifier.height(16.dp))
 
+    OutlinedTextField(value = height, onValueChange = {height = it}, label = {Text(text = "Height")})
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    OutlinedTextField(value = weight, onValueChange = {weight = it}, label = {Text(text = "Weight")})
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    OutlinedTextField(value = age, onValueChange = {age = it}, label = {Text(text = "Age")})
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    OutlinedTextField(value = activityLevel, onValueChange = {activityLevel = it}, label = {Text(text = "Activity Level")})
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    OutlinedTextField(value = bodyFat, onValueChange = {bodyFat = it}, label = {Text(text = "BodyFat")})
+
+    Spacer(modifier = Modifier.height(16.dp))
+
     OutlinedTextField(value = password, onValueChange = {password = it}, label = {Text(text = "Password")})
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -153,8 +184,8 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
     Button(onClick = {
         var check = false
 
-        if (email != "" && firstName != "" && lastName != "" && password != "" && accountList.value.size == 0) {
-            dbViewModel.upsertAccountFromUI(Account(firstName, lastName, email, password)) { newAccount ->
+        if (email != "" && firstName != "" && lastName != "" && password != "" && accountList.value.size == 0 && height.toDoubleOrNull() != null && weight.toDoubleOrNull() != null && activityLevel.toIntOrNull() != null && bodyFat.toIntOrNull() != null) {
+            dbViewModel.upsertAccountFromUI(Account(firstName, lastName, email, password, height.toDouble(),weight.toDouble(),age.toInt(),activityLevel.toInt(),bodyFat.toInt())) { newAccount ->
                    onRegistrationSuccess(newAccount)
             }
 
@@ -172,6 +203,8 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
         Text(text = "Already have an account? ")
         Text(text = "Login", modifier = Modifier.clickable {callBack()}, color= Color.Cyan)
     }
+
+    Spacer(modifier = Modifier.height(20.dp))
 }
 
 

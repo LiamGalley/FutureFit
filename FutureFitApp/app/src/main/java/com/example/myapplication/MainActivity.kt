@@ -21,7 +21,7 @@ import com.example.myapplication.ui.theme.navigation.NavigationContent
 
 class MainActivity : ComponentActivity() {
     private val db by lazy { Room.databaseBuilder(applicationContext, AppDatabase::class.java,
-        "test.db").build() }
+        "final.db").build() }
 
 
     private val dbViewModel by viewModels<AnotherViewModel> (
