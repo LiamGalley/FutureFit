@@ -30,6 +30,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -123,14 +124,15 @@ fun HomeScreen(navController: NavController, dbViewModel: AnotherViewModel, user
 
 @Composable
 fun GPTResponseScreen(viewModel: GPTViewModel) {
-    val userQuery = "Give me only 1 very short gym motivational quote different everytime"
+    val userQuery = "Give me only 1 very short gym motivational quote different every time"
 
     LaunchedEffect(Unit) {
-        viewModel.setQuery(userQuery)
-        viewModel.fetchGPTResponse()
+        val response = viewModel.fetchGPTResponse(userQuery)
+
+        viewModel.gptResponse = response
     }
 
-    Scaffold { paddingValues ->
+   Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -142,13 +144,14 @@ fun GPTResponseScreen(viewModel: GPTViewModel) {
                 text = viewModel.gptResponse,
                 fontSize = 29.sp,
                 fontWeight = FontWeight.Bold,
-                //maxLines = 5,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(16.dp)
             )
         }
     }
 }
+
 
 @Composable
 fun LatestWorkout(workout: Workout, dbViewModel: AnotherViewModel) {
