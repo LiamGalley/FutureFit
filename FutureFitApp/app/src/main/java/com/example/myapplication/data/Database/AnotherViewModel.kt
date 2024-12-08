@@ -34,6 +34,14 @@ class AnotherViewModel(
         }
     }
 
+    fun upsertWorkoutFromUI(workout: Workout, onSuccess: (Workout) -> Unit)
+    {
+        viewModelScope.launch {
+            val newAccount = repository.upsertWorkout(workout)
+            onSuccess(newAccount)
+        }
+    }
+
     fun deleteAccount(account: Account){
         viewModelScope.launch {
             repository.deleteAccount(account)

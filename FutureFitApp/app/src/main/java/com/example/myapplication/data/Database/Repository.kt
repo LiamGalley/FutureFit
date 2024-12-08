@@ -23,8 +23,9 @@ class Repository(
 
     fun getAccountById(id: Int) = db.AccountDao.getAccountById(id)
 
-    suspend fun upsertWorkout(workout: Workout) {
-        db.WorkoutDao.upsertWorkout(workout)
+    suspend fun upsertWorkout(workout: Workout): Workout {
+        val rowId = db.WorkoutDao.upsertWorkout(workout)
+        return workout.copy(workoutId = rowId.toInt())
     }
 
     suspend fun deleteWorkout(workout: Workout){

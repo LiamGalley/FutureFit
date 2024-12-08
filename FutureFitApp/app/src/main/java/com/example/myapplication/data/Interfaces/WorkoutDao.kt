@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutDao {
 
     @Upsert
-    suspend fun upsertWorkout(workout: Workout)
+    suspend fun upsertWorkout(workout: Workout): Long
 
     @Delete
     suspend fun deleteWorkout(workout: Workout)

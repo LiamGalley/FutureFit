@@ -24,14 +24,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.myapplication.data.Database.AnotherViewModel
 import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Exercise
 import com.example.myapplication.data.Entities.Workout
 import com.example.myapplication.data.ViewModels.GPTViewModel
 import com.example.myapplication.ui.theme.navigation.WorkoutHistory
 import kotlinx.coroutines.launch
-import java.sql.Date
-import java.time.Instant
 
 @Composable
 fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewModel: AnotherViewModel, gptViewModel: GPTViewModel) {
@@ -40,7 +40,7 @@ fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewMode
     var age by remember { mutableStateOf("${user.age}") }
     var selectedMuscleGroup by remember { mutableStateOf("Whole Body") }
 
-    val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Shoulders", "Abs", "Whole Body")
+    val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Abs", "Whole Body")
 
     Column(
         modifier = Modifier
@@ -112,21 +112,32 @@ fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewMode
                         gptViewModel.viewModelScope.launch {
                             val response = gptViewModel.fetchGPTResponse(workoutQuery)
 
-                            val responsedata = response.split(',')
-                            if (responsedata.size >= 3) {
-                                dbViewModel.upsertWorkout(
+                            val responseData: List<String> = response.split(", ")
+                            if (responseData.size >= 3) {
+                                dbViewModel.upsertWorkoutFromUI(
                                     Workout(
-                                        name = responsedata[0],
+                                        name = responseData[0],
                                         date = System.currentTimeMillis(),
-                                        duration = responsedata[1].toInt(),
-                                        intensity = responsedata[2],
+                                        duration = responseData[1].toInt(),
+                                        intensity = responseData[2],
                                         accountId = user.id
                                     )
-                                )
+                                ){
+                                    newWorkout ->
+                                    val newResponse: List<String> = responseData.slice(3..(responseData.count() - 1))
+                                    newResponse.forEach { exercise ->
+                                        dbViewModel.upsertExercise(Exercise(name = exercise, workoutId = newWorkout.workoutId))
+                                    }
+                                }
 
                                 navController.navigate(WorkoutHistory.route) {
-                                    popUpTo("workouts") { inclusive = true }
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
+
 
                             } else {
                                 Toast.makeText(
