@@ -22,9 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.example.myapplication.data.Database.AnotherViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Workout
+import com.example.myapplication.data.ViewModels.GPTViewModel
+import com.example.myapplication.ui.theme.navigation.WorkoutHistory
+import kotlinx.coroutines.launch
+import java.sql.Date
+import java.time.Instant
 
 @Composable
-fun WorkoutSelectionPage() {
+fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewModel: AnotherViewModel, gptViewModel: GPTViewModel) {
     var weight by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
@@ -65,40 +75,75 @@ fun WorkoutSelectionPage() {
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
-        // Muscle group selection
-        Text(text = "Select Muscle Group", style = MaterialTheme.typography.bodyLarge)
-        muscleGroups.forEach { muscleGroup ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = selectedMuscleGroup == muscleGroup,
-                    onClick = { selectedMuscleGroup = muscleGroup }
-                )
-                Text(text = muscleGroup)
+        // Created a column in the column only for muscle groups choice
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(text = "Select Muscle Group", style = MaterialTheme.typography.bodyLarge)
+            muscleGroups.forEach { muscleGroup ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = selectedMuscleGroup == muscleGroup,
+                        onClick = { selectedMuscleGroup = muscleGroup }
+                    )
+                    Text(text = muscleGroup)
+                }
             }
         }
+
         var current = LocalContext.current
         // Generate Program Button
         Button(
             onClick = {
-                // Call API to generate workout program based on the user input
                 if (weight.isNotEmpty() && height.isNotEmpty() && age.isNotEmpty()) {
                     try {
                         val weightInt = weight.toInt()
                         val heightInt = height.toInt()
                         val ageInt = age.toInt()
 
+                        val workoutQuery = """
+                    Give me a workout plan using these information: <gender>, $ageInt, <BodyFat%>, $weightInt, $heightInt, $selectedMuscleGroup. 
+                    The output needs to be <TitleOfMuscleWorkout>, <duration in minutes>, <Intensity either Low, Medium, High>, 
+                    <Exercises 3-5 only their names>. The output is a string comma separated with no spaces after the commas.
+                """.trimIndent()
+
+                        gptViewModel.viewModelScope.launch {
+                            val response = gptViewModel.fetchGPTResponse(workoutQuery)
+
+                            val responsedata = response.split(',')
+                            if (responsedata.size >= 3) {
+                                dbViewModel.upsertWorkout(
+                                    Workout(
+                                        name = responsedata[0],
+                                        date = System.currentTimeMillis(),
+                                        duration = responsedata[1].toInt(),
+                                        intensity = responsedata[2],
+                                        accountId = user.id
+                                    )
+                                )
+
+                                navController.navigate(WorkoutHistory.route) {
+                                    popUpTo("workouts") { inclusive = true }
+                                }
+
+                            } else {
+                                Toast.makeText(
+                                    current,
+                                    "Invalid response from GPT.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     } catch (e: NumberFormatException) {
-                        // Handle invalid input
                         Toast.makeText(
                             current,
                             "Please enter valid numbers for weight, height, and age.",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(
                         current,
                         "Please fill in all fields.",
@@ -107,7 +152,8 @@ fun WorkoutSelectionPage() {
                 }
             }
         ) {
-            Text("Generate Workout Program")
+            Text(text = "Generate Workout Program")
         }
+
     }
 }

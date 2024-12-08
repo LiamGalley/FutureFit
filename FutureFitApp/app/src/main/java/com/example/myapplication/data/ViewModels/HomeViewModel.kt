@@ -16,7 +16,6 @@ class HomeViewModel(
     private val _userId: MutableStateFlow<Int> = MutableStateFlow(0)
     private val _userName: MutableStateFlow<String> = MutableStateFlow("")
     private val _userEmail: MutableStateFlow<String> = MutableStateFlow("")
-    private val _quote: MutableState<String> = mutableStateOf("")
 
     init{
         // CALL QUERY TO FILL ABOVE FIELDS
@@ -26,9 +25,5 @@ class HomeViewModel(
             _userName.value = dataStoreManager.userNameFlow.first()
             _userEmail.value = dataStoreManager.userEmailFlow.first()
         }
-    }
-
-    fun getQuote(){
-        // GET QUOTE FROM CHAT GPT
     }
 }

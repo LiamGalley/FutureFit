@@ -60,6 +60,7 @@ fun NavigationContent(
 
     var isRegistrationValid by remember { mutableStateOf(false)}
     var idUser by remember { mutableStateOf(Account("r","r","r","r"))}
+    val gptViewModel: GPTViewModel = viewModel()
 
     Scaffold(
         bottomBar = {
@@ -112,9 +113,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val gptViewModel: GPTViewModel = viewModel()
                     HomeScreen(navController = navController,dbViewModel, idUser, gptViewModel = gptViewModel)
-                    Text(text = "It fucking works", fontSize = 30.sp)
                 }
             }
 
@@ -153,7 +152,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WorkoutSelectionPage()
+                    WorkoutSelectionPage(navController = navController, idUser, dbViewModel, gptViewModel = gptViewModel)
                 }
             }
 
