@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.theme.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,7 +38,9 @@ import com.example.myapplication.ui.theme.screens.LoginScreen
 import com.example.myapplication.ui.theme.screens.SettingScreen
 import com.example.myapplication.ui.theme.screens.WorkoutDetailsScreen
 import com.example.myapplication.ui.theme.screens.WorkoutSelectionPage
+import java.time.Instant
 
+@SuppressLint("NewApi")
 @Composable
 fun NavigationContent(
     navController: NavHostController,
@@ -47,19 +50,20 @@ fun NavigationContent(
 //    dbViewModel.upsertAccount(Account(firstName = "Alice",
 //        lastName = "Johnson",
 //        emailAddress = "alice.johnson@example.com", password = "works"))
-//    val workout = Workout(
-//        name = "Morning Cardio",
-//        date = System.currentTimeMillis(),
-//        duration = 30,
-//        intensity = "Medium",
-//        accountId = 14
-//    )
-//    dbViewModel.upsertWorkout(workout)
+    val currentInstant: Instant = Instant.now()
+    val workout = Workout(
+        name = "Morning Cardio",
+        date = currentInstant.toEpochMilli(),
+        duration = 30,
+        intensity = "Medium",
+        accountId = 1
+    )
+    dbViewModel.upsertWorkout(workout)
 //    dbViewModel.upsertExercise(Exercise(name = "test", workoutId = 4))
 //    dbViewModel.upsertExercise(Exercise(name ="test", workoutId = 4))
 
     var isRegistrationValid by remember { mutableStateOf(false)}
-    var idUser by remember { mutableStateOf(Account("r","r","r","r"))}
+    var idUser by remember { mutableStateOf(Account("r","r","r","r", activityLevel = 0, age = 0, bodyFat = 0, height = 0.0, weight = 0.0))}
     val gptViewModel: GPTViewModel = viewModel()
 
     Scaffold(
