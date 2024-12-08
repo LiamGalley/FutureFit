@@ -44,38 +44,27 @@ data class User(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val createdAt: String
+    val height: Double,
+    val weight: Double,
+    val age: Int,
+    val bodyFat: Double,
+    val activityLevel: Int,
+    val metricSystem: Boolean,
 )
 
 val sampleUsers = listOf(
     User(
         id = 1,
-        firstName = "Alice",
-        lastName = "Johnson",
-        email = "alice.johnson@example.com",
-        createdAt = "2024-01-05T08:30:00Z"
-    ),
-    User(
-        id = 2,
         firstName = "Bob",
         lastName = "Smith",
         email = "bob.smith@example.com",
-        createdAt = "2024-01-06T09:45:00Z"
+        height = 185.0,
+        weight = 170.5,
+        age = 24,
+        bodyFat = 15.2,
+        activityLevel = 3,
+        metricSystem = true
     ),
-    User(
-        id = 3,
-        firstName = "Charlie",
-        lastName = "Lee",
-        email = "charlie.lee@example.com",
-        createdAt = "2024-01-07T10:15:00Z"
-    ),
-    User(
-        id = 4,
-        firstName = "Diana",
-        lastName = "Garcia",
-        email = "diana.garcia@example.com",
-        createdAt = "2024-01-08T11:00:00Z"
-    )
 )
 //#endregion
 
@@ -173,7 +162,13 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WorkoutSelectionPage()
+                    WorkoutSelectionPage(
+                        settingsViewModel.height,
+                        settingsViewModel.weight,
+                        profileViewModel.age,
+                        profileViewModel.bodyFat,
+                        profileViewModel.activityLevel,
+                    )
                 }
             }
 
@@ -194,9 +189,20 @@ fun NavigationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SettingScreen(
-                        idUser,
+                        profileViewModel.userId,
+                        profileViewModel.userName,
+                        profileViewModel.userEmail,
+                        settingsViewModel.height,
+                        settingsViewModel.weight,
+                        settingsViewModel.darkTheme,
+                        settingsViewModel.metricSystem,
+                        settingsViewModel.largeFontSize,
+                        profileViewModel.age,
+                        profileViewModel.bodyFat,
+                        profileViewModel.activityLevel,
                         { settingsViewModel.toggleTheme() },
-                        { settingsViewModel.toggleLargeFontSize() }
+                        { settingsViewModel.toggleLargeFontSize() },
+                        { settingsViewModel.toggleMeasurementSystem() }
                     )
                 }
             }

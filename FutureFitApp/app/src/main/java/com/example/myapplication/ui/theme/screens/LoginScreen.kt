@@ -91,10 +91,15 @@ fun Login(callBack:()->Unit,onRegistrationSuccess:(value: User)->Unit)
         var check = false
         var User: User = User(
             id = 1,
-            firstName = "Alice",
-            lastName = "Johnson",
-            email = "alice.johnson@example.com",
-            createdAt = "2024-01-05T08:30:00Z"
+            firstName = "Bob",
+            lastName = "Smith",
+            email = "bob.smith@example.com",
+            height = 180.5,
+            weight = 77.4,
+            age = 24,
+            bodyFat = 15.4,
+            activityLevel = 3,
+            metricSystem = true
         )
 
         sampleUsers.forEach { user ->

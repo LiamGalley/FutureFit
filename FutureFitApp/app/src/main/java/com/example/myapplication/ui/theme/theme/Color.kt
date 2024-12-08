@@ -16,5 +16,5 @@ val RedText = Color(0xFFFF0000) // Bright Red
 val DarkForeGround = Color(0xFF121212) // Almost Black
 val DarkBackground = Color(0xFF1E1E2F) // Deep Charcoal
 val DarkPrimaryText = Color(0xFFF5F5F5) // Soft White
-val DarkSecondaryText = Color(0xFFB0BEC5) // Muted Steel Blue
-val DarkBorder = Color(0xFF616161) // Medium Gray
+val DarkSecondaryText = Color(0xFFB6C4CB) // Muted Steel Blue
+val DarkBorder = Color(0xFF8F8F8F) // Medium Gray

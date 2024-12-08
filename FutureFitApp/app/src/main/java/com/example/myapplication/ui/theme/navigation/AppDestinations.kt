@@ -41,5 +41,5 @@ data object WorkoutCreation: AppDestinations {
     override val icon = Icons.Default.Create}
 
 val appScreens = listOf(
-    Home, WorkoutHistory, Settings, WorkoutCreation
+    Home, WorkoutHistory, WorkoutCreation, Settings
 )

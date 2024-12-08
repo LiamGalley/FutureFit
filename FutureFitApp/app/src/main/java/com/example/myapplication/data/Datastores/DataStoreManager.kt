@@ -9,25 +9,38 @@ import com.example.myapplication.utils.PreferencesKeys
 
 class DataStoreManager(private val context: Context) {
     suspend fun saveTheme(darkMode: Boolean) {
-        context.dataStore.edit { preferences -> preferences[PreferencesKeys.DARK_MODE] = darkMode
-        }
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.DARK_MODE] = darkMode }
     }
 
     suspend fun saveMeasurementSystem(metricSystem: Boolean) {
-        context.dataStore.edit { preferences -> preferences[PreferencesKeys.METRIC_SYSTEM] = metricSystem
-        }
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.METRIC_SYSTEM] = metricSystem }
     }
 
     suspend fun saveFontSize(fontSize: Boolean){
-        context.dataStore.edit { preferences -> preferences[PreferencesKeys.FONT_SIZE] = fontSize}
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.FONT_SIZE] = fontSize}
     }
 
     suspend fun saveUserName(userName: String){
-        context.dataStore.edit { preferences -> preferences[PreferencesKeys.USER_NAME] = userName }
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_NAME] = userName }
     }
 
     suspend fun saveUserEmail(userEmail: String){
-        context.dataStore.edit { preferences -> preferences[PreferencesKeys.USER_EMAIL] = userEmail }
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_EMAIL] = userEmail }
+    }
+
+    suspend fun saveUserWeight(userHeight: Double){
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.WEIGHT] = userHeight }
+    }
+
+    suspend fun saveUserHeight(userHeight: Double){
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.HEIGHT] = userHeight }
     }
 
     val userIdFlow: Flow<Int> = context.dataStore.data
@@ -47,4 +60,10 @@ class DataStoreManager(private val context: Context) {
 
     val fontSizeFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.FONT_SIZE] ?: false }
+
+    val userHeightFlow: Flow<Double> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.HEIGHT] ?: 0.0}
+
+    val userWeightFlow: Flow<Double> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.WEIGHT] ?: 0.0}
 }

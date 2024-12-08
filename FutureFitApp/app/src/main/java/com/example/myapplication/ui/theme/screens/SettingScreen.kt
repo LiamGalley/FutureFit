@@ -14,9 +14,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -24,14 +27,24 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.theme.navigation.User
-import java.sql.Time
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun SettingScreen(
-    user: User,
+    userId: StateFlow<Int>,
+    userName: StateFlow<String>,
+    userEmail: StateFlow<String>,
+    height: StateFlow<Double>,
+    weight: StateFlow<Double>,
+    darkTheme: StateFlow<Boolean>,
+    metricSystem: StateFlow<Boolean>,
+    largeFontSize: StateFlow<Boolean>,
+    age: Int,
+    bodyFat: Double,
+    activityLevel: Int,
     toggleTheme: () -> Unit,
     toggleFontSize: () -> Unit,
+    toggleMeasurementSystem: () -> Unit,
 ){
     Column(
         modifier = Modifier
@@ -41,110 +54,142 @@ fun SettingScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var darkModeButton = rememberSaveable{ mutableStateOf(false) }
-        var fontSizeButton = rememberSaveable{ mutableStateOf(false) }
-        var measurementSystemButton = rememberSaveable{ mutableStateOf(false) }
+        Title()
 
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.titleLarge)
+        AccountInformation(userId, userName, userEmail)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Account Information",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.Start))
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        AccountInfoRow(label = "Account ID:", value = user.id.toString())
-        AccountInfoRow(label = "Account Email:", value = user.email)
-        AccountInfoRow(label = "Account Name:", value = "${user.firstName} + ${user.lastName}")
-
-        Spacer(modifier = Modifier.height(16.dp))
-        DrawLine()
-
-        Text(
-            text = "Personal Information",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.Start))
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        AccountInfoRow("Weight", value = "170 LBs")
-        AccountInfoRow("Height", value = "185 CMs")
-        AccountInfoRow("Age", value = "24")
-        AccountInfoRow("Body Fat", value = "15 %")
-        AccountInfoRow("Activity Level", value = "3")
-        AccountInfoRow("Measurement System", value = "Metric")
-
-
-        Spacer(modifier = Modifier.height(16.dp))
-        DrawLine()
-
-        Text(
-            text = "Account Appearance",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.Start))
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth().padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("☀️")
-            Switch(checked = darkModeButton.value, onCheckedChange = {
-                darkModeButton.value = !darkModeButton.value
-                toggleTheme()}
-            )
-            Text("🌘")
+        if (metricSystem.collectAsState().value){
+            PersonalInformation(height, weight, metricSystem.collectAsState().value,
+                "Metric", age, bodyFat, activityLevel)
+        } else{
+            PersonalInformation(height, weight, metricSystem.collectAsState().value,
+                "Imperial", age, bodyFat, activityLevel)
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        AccountAppearance()
+        AccountAppearanceSwitches(darkTheme.collectAsState().value, toggleTheme,
+            "☀", "\uD83C\uDF18")
+        AccountAppearanceSwitches(largeFontSize.collectAsState().value, toggleFontSize,
+            "\uD83E\uDD0F", "\uD83D\uDD90")
+        AccountAppearanceSwitches(metricSystem.collectAsState().value, toggleMeasurementSystem,
+            "\uD83E\uDD85", "\uD83E\uDED6")
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth().padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("\uD83E\uDD0F")
-            Switch(checked = fontSizeButton.value, onCheckedChange = {
-                fontSizeButton.value = !fontSizeButton.value
-                toggleFontSize()})
-            Text("\uD83D\uDD90")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth().padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("\uD83E\uDD85")
-            Switch(checked = measurementSystemButton.value, onCheckedChange = {
-                measurementSystemButton.value = !measurementSystemButton.value
-                toggleTheme()})
-            Text("\uD83E\uDED6")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        DrawLine()
-
-        Text(
-            text = "Help & Support",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.Start))
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        AccountInfoRow("Help Desk", value = "123-456-7890")
-        AccountInfoRow("LinkedIn Support", value = "LinkedIn.com/FutureFitSupport")
-        AccountInfoRow("Website Chatline", value = "FutureFit.com/SupportChat")
+        HelpAndSupport()
     }
+}
+
+@Composable
+fun Title(){
+    Text(
+        text = "Settings",
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = Modifier.padding(16.dp))
+}
+
+@Composable
+fun AccountInformation(
+    userId: StateFlow<Int>,
+    userName: StateFlow<String>,
+    userEmail: StateFlow<String>,
+){
+    Text(
+        text = "Account Information",
+        style = MaterialTheme.typography.titleSmall,
+        modifier = Modifier.fillMaxWidth())
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    AccountInfoRow(label = "Account ID:", value = userId.collectAsState().value.toString())
+    AccountInfoRow(label = "Account Name:", value = userName.collectAsState().value)
+    AccountInfoRow(label = "Account Email:", value = userEmail.collectAsState().value)
+
+    Spacer(modifier = Modifier.height(16.dp))
+    DrawLine()
+}
+
+@Composable
+fun PersonalInformation(
+    height: StateFlow<Double>,
+    weight: StateFlow<Double>,
+    metricSystem: Boolean,
+    metricSystemText: String,
+    age: Int,
+    bodyFat: Double,
+    activityLevel: Int,
+){
+    var weightMeasurement = ""
+    var heightMeasurement = ""
+
+    Text(
+        text = "Personal Information",
+        style = MaterialTheme.typography.titleSmall,
+        modifier = Modifier.fillMaxWidth())
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    if (metricSystem){
+        weightMeasurement = "kgs"
+        heightMeasurement = "cms"
+    } else {
+        weightMeasurement = "Lbs"
+        heightMeasurement = "ft"
+    }
+
+    AccountInfoRow("Weight", value = "${weight.collectAsState().value} $weightMeasurement")
+    AccountInfoRow("Height", value = "${height.collectAsState().value} $heightMeasurement")
+    AccountInfoRow("Age", value = age.toString())
+    AccountInfoRow("Body Fat", value = "$bodyFat %")
+    AccountInfoRow("Activity Level", value = activityLevel.toString())
+    AccountInfoRow("Measurement System", value = metricSystemText)
+
+
+    Spacer(modifier = Modifier.height(16.dp))
+    DrawLine()
+
+    Spacer(modifier = Modifier.height(8.dp))
+}
+
+@Composable
+fun AccountAppearance(){
+    Text(
+        text = "Account Appearance",
+        style = MaterialTheme.typography.titleSmall,
+        modifier = Modifier.fillMaxWidth())
+
+    Spacer(modifier = Modifier.height(8.dp))
+}
+
+@Composable
+fun HelpAndSupport(){
+    DrawLine()
+
+    Text(
+        text = "Help & Support",
+        style = MaterialTheme.typography.titleSmall,
+        modifier = Modifier.fillMaxWidth())
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    AccountInfoRow("Help Desk", value = "123-456-7890")
+    AccountInfoRow("LinkedIn Support", value = "LinkedIn.com/FutureFitSupport")
+    AccountInfoRow("Website Chatline", value = "FutureFit.com/SupportChat")
+}
+
+@Composable
+fun AccountAppearanceSwitches(
+    isSwitchChecked: Boolean, toggle: () -> Unit,
+    firstText: String, secondText: String){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth().padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(firstText)
+        Switch(checked = isSwitchChecked, onCheckedChange = { toggle()})
+        Text(secondText)
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable

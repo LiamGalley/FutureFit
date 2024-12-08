@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,8 +59,7 @@ fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
                 ){
                     Text(
                         text = "Future",
-                        fontSize = 75.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                     Image(
@@ -71,8 +71,7 @@ fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
                     )
                     Text(
                         text = "Fit",
-                        fontSize = 75.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
