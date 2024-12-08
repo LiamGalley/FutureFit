@@ -15,6 +15,7 @@
       <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Color.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Theme.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Theme.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/FutureFitApp/app/src/main/java/com/example/myapplication/ui/theme/theme/Type.kt" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,9 +63,11 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+
     "git-widget-placeholder": "Liam-ViewModel-M5",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/LiamJ/AndroidStudioProjects/FutureFit/FutureFitApp",
+
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.2"

@@ -19,6 +19,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -27,49 +29,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-data class Workout(
-    val name: String,
-    val durationMinutes: Int, // Duration in minutes
-    val exercises: List<String>,
-    val intensityLevel: String // "Low", "Medium", "High"
-)
-
-val workouts = listOf(
-    // Existing workouts...
-
-    Workout(
-        name = "Upper Body Sculpt",
-        durationMinutes = 40,
-        exercises = listOf(
-            "Push-ups",       // Targets chest, shoulders, and triceps
-            "Dumbbell Rows",  // Strengthens the upper back, biceps, and shoulders
-            "Tricep Dips",    // Focuses on the triceps while engaging the shoulders and chest
-            "Bicep Curls",    // Targets the biceps for increased arm strength
-            "Shoulder Press"  // Strengthens the shoulders and engages the triceps
-        ),
-        intensityLevel = "Medium"
-    ),
-    Workout(
-        name = "Leg Day Burn",
-        durationMinutes = 50,
-        exercises = listOf(
-            "Squats",         // A lower-body exercise targeting the glutes, quads, and hamstrings
-            "Lunges",         // A unilateral movement that works the legs, hips, and glutes
-            "Leg Press",      // A machine-based exercise that targets the quads, glutes, and hamstrings
-            "Romanian Deadlifts", // A hamstring-focused exercise that also works the glutes and lower back
-            "Calf Raises"     // Targets the calves and helps improve ankle stability
-        ),
-        intensityLevel = "High"
-    )
-)
+import com.example.myapplication.data.Database.AnotherViewModel
+import com.example.myapplication.data.Entities.Workout
 
 @Composable
-fun WorkoutDetailsScreen(workout: Workout, callback:() -> Unit) {
+fun WorkoutDetailsScreen(workout: Workout, dbViewModel: AnotherViewModel, callback:() -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF3F3F3))
+            .padding(4.dp)
     ) {
         Column(
             modifier = Modifier
@@ -100,35 +69,28 @@ fun WorkoutDetailsScreen(workout: Workout, callback:() -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                Text(
-                    text = "Duration: ${workout.durationMinutes} minutes",
-                    fontSize = 18.sp,
-                    color = Color(0xFF666666)
-                )
+
+            // Duration
+            Text(
+                text = "Duration: ${workout.duration} minutes",
+                fontSize = 18.sp,
+                color = Color(0xFF666666)
+            )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Intensity: ${workout.intensityLevel}",
-                        fontSize = 18.sp,
-                        color = when (workout.intensityLevel) {
-                            "High" -> Color.Red
-                            "Medium" -> Color.Magenta
-                            "Low" -> Color.Green
-                            else -> Color.Gray
-                        },
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
+            // Intensity Level
+            Text(
+                text = "Intensity: ${workout.intensity}",
+                fontSize = 18.sp,
+                color = when (workout.intensity) {
+                    "High" -> Color.Red
+                    "Medium" -> Color.Magenta
+                    "Low" -> Color.Green
+                    else -> Color.Gray
+                },
+                fontWeight = FontWeight.SemiBold
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -142,18 +104,15 @@ fun WorkoutDetailsScreen(workout: Workout, callback:() -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 8.dp)
-            ) {
-                items(workout.exercises) { exercise ->
-                    Text(
-                        text = "- $exercise",
-                        fontSize = 16.sp,
-                        color = Color(0xFF444444)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
+
+            val exerciseList by dbViewModel.getExerciseByWorkoutId(workout.workoutId).observeAsState(emptyList())
+            exerciseList.forEach { exercise ->
+                Text(
+                    text = "- ${exercise.name}",
+                    fontSize = 16.sp,
+                    color = Color(0xFF444444)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
             }
 
             // Button to Navigate Back
@@ -187,16 +146,16 @@ fun ClickableContainer(workout: Workout, onClick: () -> Unit) {
         ){
             Text(text="Name: ${workout.name}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text="Duration: ${workout.durationMinutes} min", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(text="Duration: ${workout.duration} min", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
     }
 }
 
 @Composable
-fun DisplayWorkouts(callback:(Workout) -> Unit){
+fun DisplayWorkouts(workoutList:List<Workout>,callback:(Workout) -> Unit){
     LazyColumn(modifier = Modifier) {
-        items(workouts) { workout ->
+        items(workoutList) { workout ->
             ClickableContainer(workout = workout, {callback(workout)})
         }
     }

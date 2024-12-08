@@ -27,25 +27,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.StateFlow
+import androidx.compose.ui.unit.sp
+import com.example.myapplication.data.Entities.Account
 
 @Composable
-fun SettingScreen(
-    userId: StateFlow<Int>,
-    userName: StateFlow<String>,
-    userEmail: StateFlow<String>,
-    height: StateFlow<Double>,
-    weight: StateFlow<Double>,
-    darkTheme: StateFlow<Boolean>,
-    metricSystem: StateFlow<Boolean>,
-    largeFontSize: StateFlow<Boolean>,
-    age: Int,
-    bodyFat: Double,
-    activityLevel: Int,
-    toggleTheme: () -> Unit,
-    toggleFontSize: () -> Unit,
-    toggleMeasurementSystem: () -> Unit,
-){
+fun SettingScreen(user: Account){
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,13 +45,13 @@ fun SettingScreen(
 
         AccountInformation(userId, userName, userEmail)
 
+
         if (metricSystem.collectAsState().value){
             PersonalInformation(height, weight, metricSystem.collectAsState().value,
                 "Metric", age, bodyFat, activityLevel)
         } else{
             PersonalInformation(height, weight, metricSystem.collectAsState().value,
                 "Imperial", age, bodyFat, activityLevel)
-        }
 
         AccountAppearance()
         AccountAppearanceSwitches(darkTheme.collectAsState().value, toggleTheme,

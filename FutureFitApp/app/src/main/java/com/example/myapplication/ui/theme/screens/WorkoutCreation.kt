@@ -28,24 +28,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.myapplication.data.Database.AnotherViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Exercise
+import com.example.myapplication.data.Entities.Workout
+import com.example.myapplication.data.ViewModels.GPTViewModel
+import com.example.myapplication.ui.theme.navigation.WorkoutHistory
+import kotlinx.coroutines.launch
 
 @Composable
-fun WorkoutSelectionPage(
-    height: StateFlow<Double>,
-    weight: StateFlow<Double>,
-    age: Int,
-    bodyFat: Double,
-    activityLevel: Int
-) {
-    var weight by remember { mutableStateOf(weight.value.toString()) }
-    var height by remember { mutableStateOf(height.value.toString()) }
-    var age by remember { mutableStateOf(age.toString()) }
-    var bodyFat by remember { mutableStateOf(bodyFat.toString()) }
-    var activityLevel by remember { mutableStateOf(activityLevel.toString()) }
+fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewModel: AnotherViewModel, gptViewModel: GPTViewModel) {
+    var weight by remember { mutableStateOf("${user.weight}") }
+    var height by remember { mutableStateOf("${user.height}") }
+    var age by remember { mutableStateOf("${user.age}") }
     var selectedMuscleGroup by remember { mutableStateOf("Whole Body") }
 
-    val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Shoulders", "Abs", "Whole Body")
+    val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Abs", "Whole Body")
 
     Column(
         modifier = Modifier
@@ -88,51 +89,20 @@ fun WorkoutSelectionPage(
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
-        // Body input
-        TextField(
-            value = bodyFat,
-            onValueChange = { bodyFat = it },
-            label = { Text("Body Fat (percentage)") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
-
-        // Activity Level input
-        TextField(
-            value = activityLevel,
-            onValueChange = { activityLevel = it },
-            label = { Text("Activity Level (1-5)") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Muscle Groups",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.align(Alignment.Start))
-
-        // Display the muscle group options
+        // Created a column in the column only for muscle groups choice
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            muscleGroups.forEach { muscle ->
+            Text(text = "Select Muscle Group", style = MaterialTheme.typography.bodyLarge)
+            muscleGroups.forEach { muscleGroup ->
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
-                        selected = muscle == selectedMuscleGroup,
-                        onClick = { selectedMuscleGroup = muscle }
+                        selected = selectedMuscleGroup == muscleGroup,
+                        onClick = { selectedMuscleGroup = muscleGroup }
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = muscle,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Text(text = muscleGroup)
                 }
             }
         }
@@ -142,23 +112,64 @@ fun WorkoutSelectionPage(
         // Generate Program Button
         Button(
             onClick = {
-                // Call API to generate workout program based on the user input
                 if (weight.isNotEmpty() && height.isNotEmpty() && age.isNotEmpty()) {
                     try {
                         val weightInt = weight.toInt()
                         val heightInt = height.toInt()
                         val ageInt = age.toInt()
 
+                        val workoutQuery = """
+                    Give me a workout plan using these information: $ageInt, ${user.bodyFat}, $weightInt, $heightInt, $selectedMuscleGroup. 
+                    The output needs to be <TitleOfMuscleWorkout>, <duration in minutes>, <Intensity either Low, Medium, High>, 
+                    <Exercises 3-5 only their names>. The output is a string comma separated with no spaces after the commas.
+                """.trimIndent()
+
+                        gptViewModel.viewModelScope.launch {
+                            val response = gptViewModel.fetchGPTResponse(workoutQuery)
+
+                            val responseData: List<String> = response.split(", ")
+                            if (responseData.size >= 3) {
+                                dbViewModel.upsertWorkoutFromUI(
+                                    Workout(
+                                        name = responseData[0],
+                                        date = System.currentTimeMillis(),
+                                        duration = responseData[1].toInt(),
+                                        intensity = responseData[2],
+                                        accountId = user.id
+                                    )
+                                ){
+                                    newWorkout ->
+                                    val newResponse: List<String> = responseData.slice(3..(responseData.count() - 1))
+                                    newResponse.forEach { exercise ->
+                                        dbViewModel.upsertExercise(Exercise(name = exercise, workoutId = newWorkout.workoutId))
+                                    }
+                                }
+
+                                navController.navigate(WorkoutHistory.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+
+
+                            } else {
+                                Toast.makeText(
+                                    current,
+                                    "Invalid response from GPT.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     } catch (e: NumberFormatException) {
-                        // Handle invalid input
                         Toast.makeText(
                             current,
                             "Please enter valid numbers for weight, height, and age.",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(
                         current,
                         "Please fill in all fields.",
@@ -167,7 +178,8 @@ fun WorkoutSelectionPage(
                 }
             }
         ) {
-            Text("Generate Workout Program")
+            Text(text = "Generate Workout Program")
         }
+
     }
 }

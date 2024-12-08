@@ -29,7 +29,8 @@ import com.example.myapplication.ui.theme.navigation.NavigationContent
 
 class MainActivity : ComponentActivity() {
     private val db by lazy { Room.databaseBuilder(applicationContext, AppDatabase::class.java,
-        "account.db").build() }
+        "final.db").build() }
+
 
     private val dbViewModel by viewModels<DatabaseViewModel> (
         factoryProducer = { object : ViewModelProvider.Factory{ override fun <T : ViewModel>

@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.theme.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,12 +12,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -30,44 +33,20 @@ import com.example.myapplication.data.ViewModels.HomeViewModel
 import com.example.myapplication.data.ViewModels.ProfileViewModel
 import com.example.myapplication.data.ViewModels.SettingsViewModel
 import com.example.myapplication.data.ViewModels.TrainingViewModel
+import com.example.myapplication.data.Database.AnotherViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Workout
+import com.example.myapplication.data.Entities.Exercise
 import com.example.myapplication.ui.theme.screens.DisplayWorkouts
 import com.example.myapplication.ui.theme.screens.HomeScreen
 import com.example.myapplication.ui.theme.screens.LoginScreen
 import com.example.myapplication.ui.theme.screens.SettingScreen
 import com.example.myapplication.ui.theme.screens.WorkoutDetailsScreen
 import com.example.myapplication.ui.theme.screens.WorkoutSelectionPage
-import com.example.myapplication.ui.theme.screens.workouts
 
-//#region SAMPLE DATA (DELETE WHEN IMPLEMENTING DATABASE)
-data class User(
-    val id: Int,
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val height: Double,
-    val weight: Double,
-    val age: Int,
-    val bodyFat: Double,
-    val activityLevel: Int,
-    val metricSystem: Boolean,
-)
+import java.time.Instant
 
-val sampleUsers = listOf(
-    User(
-        id = 1,
-        firstName = "Bob",
-        lastName = "Smith",
-        email = "bob.smith@example.com",
-        height = 185.0,
-        weight = 170.5,
-        age = 24,
-        bodyFat = 15.2,
-        activityLevel = 3,
-        metricSystem = true
-    ),
-)
-//#endregion
-
+@SuppressLint("NewApi")
 @Composable
 fun NavigationContent(
     navController: NavHostController,
@@ -77,8 +56,25 @@ fun NavigationContent(
     settingsViewModel: SettingsViewModel,
     trainingViewModel: TrainingViewModel
 ) {
+
+//    dbViewModel.upsertAccount(Account(firstName = "Alice",
+//        lastName = "Johnson",
+//        emailAddress = "alice.johnson@example.com", password = "works"))
+    val currentInstant: Instant = Instant.now()
+    val workout = Workout(
+        name = "Morning Cardio",
+        date = currentInstant.toEpochMilli(),
+        duration = 30,
+        intensity = "Medium",
+        accountId = 1
+    )
+    dbViewModel.upsertWorkout(workout)
+//    dbViewModel.upsertExercise(Exercise(name = "test", workoutId = 4))
+//    dbViewModel.upsertExercise(Exercise(name ="test", workoutId = 4))
+
     var isRegistrationValid by remember { mutableStateOf(false)}
-    var idUser by remember { mutableStateOf(sampleUsers[0])}
+    var idUser by remember { mutableStateOf(Account("r","r","r","r", activityLevel = 0, age = 0, bodyFat = 0, height = 0.0, weight = 0.0))}
+    val gptViewModel: GPTViewModel = viewModel()
 
     Scaffold(
         bottomBar = {
@@ -114,7 +110,7 @@ fun NavigationContent(
             modifier = Modifier.padding(innerPadding)){
 
             composable(route = "register_screen") {
-                LoginScreen(
+                LoginScreen(dbViewModel,
                     onRegistrationSuccess = {
                         isRegistrationValid = true
                         idUser = it
@@ -131,8 +127,7 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val gptViewModel: GPTViewModel = viewModel()
-                    HomeScreen(navController = navController, gptViewModel = gptViewModel)
+                    HomeScreen(navController = navController,dbViewModel, idUser, gptViewModel = gptViewModel)
                 }
             }
 
@@ -142,18 +137,27 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    DisplayWorkouts({ workout ->
-                        navController.navigate("workoutDetails/${workout.name}")
-                    })
+                    val workoutList by dbViewModel.getWorkoutByAccountId(idUser.id).observeAsState(emptyList())
+
+                    DisplayWorkouts(workoutList) { workout ->
+                        navController.navigate("workoutDetails/${workout.workoutId}")
+                    }
                 }
             }
 
-            composable("workoutDetails/{name}") { backStackEntry ->
-                val workoutName = backStackEntry.arguments?.getString("name") ?: ""
-                val selectedWorkout = workouts.find { it.name == workoutName }
-                if (selectedWorkout != null) {
-                    WorkoutDetailsScreen(selectedWorkout) { navController.popBackStack() }
+            composable("workoutDetails/{workoutId}") { backStackEntry ->
+                val workoutName = backStackEntry.arguments?.getString("workoutId") ?: ""
+                val id: Int = workoutName.toInt()
+                val workout by dbViewModel.getWorkoutById(id).observeAsState()
+                val selectedWorkout = workout
+
+
+                selectedWorkout?.let {
+                    WorkoutDetailsScreen(it, dbViewModel) {
+                        navController.popBackStack()
+                    }
                 }
+
             }
 
             composable(route = WorkoutCreation.route) {
@@ -162,13 +166,8 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WorkoutSelectionPage(
-                        settingsViewModel.height,
-                        settingsViewModel.weight,
-                        profileViewModel.age,
-                        profileViewModel.bodyFat,
-                        profileViewModel.activityLevel,
-                    )
+
+                    WorkoutSelectionPage(navController = navController, idUser, dbViewModel, gptViewModel = gptViewModel)
                 }
             }
 

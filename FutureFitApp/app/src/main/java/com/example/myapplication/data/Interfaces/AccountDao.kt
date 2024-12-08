@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AccountDao {
     @Upsert
-    suspend fun upsertAccount(account: Account)
+    suspend fun upsertAccount(account: Account): Long
 
     @Delete
     suspend fun deleteAccount(account: Account)
@@ -19,6 +19,6 @@ interface AccountDao {
     @Query("SELECT * FROM account WHERE email_address LIKE :email")
     fun getAccountByEmail(email: String): Flow<List<Account>>
 
-    @Query("SELECT * FROM account WHERE account_id LIKE :id")
-    fun getAccountById(id: Int): Flow<List<Account>>
+    @Query("SELECT * FROM account WHERE id LIKE :id")
+    fun getAccountById(id: Int): Account
 }
