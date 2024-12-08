@@ -177,12 +177,12 @@ fun NavigationContent(
                         idUser,
                         dbViewModel,
                         gptViewModel,
-
-                        settingsViewModel.height,
-                        settingsViewModel.weight,
+                        profileViewModel.height,
+                        profileViewModel.weight,
                         profileViewModel.age,
                         profileViewModel.bodyFat,
                         profileViewModel.activityLevel,
+                        { profileViewModel.initializeFromDb(idUser) }
                     )
                 }
             }
@@ -204,6 +204,7 @@ fun NavigationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SettingScreen(
+                        idUser,
                         profileViewModel.userId,
                         profileViewModel.userName,
                         profileViewModel.userEmail,
@@ -215,6 +216,7 @@ fun NavigationContent(
                         profileViewModel.age,
                         profileViewModel.bodyFat,
                         profileViewModel.activityLevel,
+                        { settingsViewModel.initializeFromDb(idUser) },
                         { settingsViewModel.toggleTheme() },
                         { settingsViewModel.toggleLargeFontSize() },
                         { settingsViewModel.toggleMeasurementSystem() }

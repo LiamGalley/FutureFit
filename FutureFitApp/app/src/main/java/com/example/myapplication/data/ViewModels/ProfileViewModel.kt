@@ -1,10 +1,9 @@
 package com.example.myapplication.data.ViewModels
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.data.DataStores.DataStoreManager
+import com.example.myapplication.data.Entities.Account
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,11 +18,17 @@ class ProfileViewModel(
     private val _userId: MutableStateFlow<Int> = MutableStateFlow(0)
     private var _userName: MutableStateFlow<String> = MutableStateFlow("")
     private val _userEmail: MutableStateFlow<String> = MutableStateFlow("")
+    private val _height: MutableStateFlow<Double> = MutableStateFlow(0.0)
+    private val _weight: MutableStateFlow<Double> = MutableStateFlow(0.0)
+    private val _initialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     //#endregion
 
     var userId: StateFlow<Int> = _userId.asStateFlow()
     var userName: StateFlow<String> = _userName.asStateFlow()
     var userEmail: StateFlow<String> = _userEmail.asStateFlow()
+    var height: StateFlow<Double> = _height.asStateFlow()
+    var weight: StateFlow<Double> = _weight.asStateFlow()
+    var initialized: StateFlow<Boolean> = _initialized.asStateFlow()
 
     var bodyFat: Double = 0.0
     var activityLevel: Int = 0
@@ -36,6 +41,21 @@ class ProfileViewModel(
             _userId.value = dataStoreManager.userIdFlow.first()
             _userName.value = dataStoreManager.userNameFlow.first()
             _userEmail.value = dataStoreManager.userEmailFlow.first()
+            _height.value = dataStoreManager.userHeightFlow.first()
+            _weight.value = dataStoreManager.userWeightFlow.first()
+            _initialized.value = dataStoreManager.initialized.first()
+        }
+    }
+
+    fun initializeFromDb(idUser: Account){
+        if (!_initialized.value){
+            _weight.value = idUser.weight
+            _height.value = idUser.height
+            bodyFat = idUser.bodyFat.toDouble()
+            activityLevel = idUser.activityLevel
+            age = idUser.age
+            _userName.value = "${idUser.firstName} ${idUser.lastName}"
+            _userEmail.value = idUser.emailAddress
         }
     }
 

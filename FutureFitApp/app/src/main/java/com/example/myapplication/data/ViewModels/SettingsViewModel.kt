@@ -3,6 +3,7 @@ package com.example.myapplication.data.ViewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.DataStores.DataStoreManager
+import com.example.myapplication.data.Entities.Account
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +36,11 @@ class SettingsViewModel(
         }
     }
 
+    fun initializeFromDb(idUser: Account){
+        _height.value = idUser.height
+        _weight.value = idUser.weight
+    }
+
     fun toggleTheme() {
         val theme = !darkTheme.value
 
@@ -45,9 +51,8 @@ class SettingsViewModel(
     }
 
     fun toggleMeasurementSystem() {
-        switchMeasurements()
-
         val system = !_metricSystem.value
+        switchMeasurements()
 
         viewModelScope.launch {
             dataStoreManager.saveMeasurementSystem(system)
@@ -57,8 +62,8 @@ class SettingsViewModel(
 
     fun switchMeasurements(){
         if (_metricSystem.value){
-            val height = _height.value / 30.48
-            val weight = _weight.value / 2.20462
+            val height = Math.round((_height.value * 30.48) * 1000.0) / 1000.0
+            val weight = Math.round((_weight.value * 2.20462) * 1000.0) / 1000.0
 
             viewModelScope.launch {
                 dataStoreManager.saveUserHeight(height)
@@ -68,8 +73,8 @@ class SettingsViewModel(
                 _weight.value = weight
             }
         } else{
-            val height = _height.value * 30.48
-            val weight = _weight.value * 2.20462
+            val height = Math.round((_height.value / 30.48) * 1000.0) / 1000.0
+            val weight = Math.round((_weight.value / 2.20462) * 1000.0) / 1000.0
 
             viewModelScope.launch {
                 dataStoreManager.saveUserHeight(height)

@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object PreferencesKeys {
     // General Preferences
-    val LOGGED_IN = booleanPreferencesKey("logged_in")
+    val INITIALIZED = booleanPreferencesKey("initialized")
     val USER_ID = intPreferencesKey("user_id")
     val USER_NAME = stringPreferencesKey("user_name")
     val USER_EMAIL = stringPreferencesKey("user_email")

@@ -50,8 +50,11 @@ fun WorkoutSelectionPage(
     weight: StateFlow<Double>,
     age: Int,
     bodyFat: Double,
-    activityLevel: Int
+    activityLevel: Int,
+    initializeFromDb: () -> Unit,
 ) {
+    initializeFromDb()
+
     var weight by remember { mutableStateOf(weight.value.toString()) }
     var height by remember { mutableStateOf(height.value.toString()) }
     var age by remember { mutableStateOf(age.toString()) }

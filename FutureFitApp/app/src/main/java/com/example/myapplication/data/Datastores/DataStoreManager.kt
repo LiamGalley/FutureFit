@@ -43,6 +43,10 @@ class DataStoreManager(private val context: Context) {
             preferences[PreferencesKeys.HEIGHT] = userHeight }
     }
 
+    suspend fun saveInitialization(initialized: Boolean){
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.INITIALIZED] = initialized }
+    }
     val userIdFlow: Flow<Int> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.USER_ID] ?: 0}
 
@@ -66,4 +70,7 @@ class DataStoreManager(private val context: Context) {
 
     val userWeightFlow: Flow<Double> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.WEIGHT] ?: 0.0}
+
+    val initialized: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.INITIALIZED] ?: false}
 }
