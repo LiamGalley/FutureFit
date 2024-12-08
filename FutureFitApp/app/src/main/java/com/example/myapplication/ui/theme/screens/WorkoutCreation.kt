@@ -35,9 +35,9 @@ import java.time.Instant
 
 @Composable
 fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewModel: AnotherViewModel, gptViewModel: GPTViewModel) {
-    var weight by remember { mutableStateOf("") }
-    var height by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
+    var weight by remember { mutableStateOf("${user.weight}") }
+    var height by remember { mutableStateOf("${user.height}") }
+    var age by remember { mutableStateOf("${user.age}") }
     var selectedMuscleGroup by remember { mutableStateOf("Whole Body") }
 
     val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Shoulders", "Abs", "Whole Body")
@@ -104,7 +104,7 @@ fun WorkoutSelectionPage(navController: NavController, user: Account, dbViewMode
                         val ageInt = age.toInt()
 
                         val workoutQuery = """
-                    Give me a workout plan using these information: <gender>, $ageInt, <BodyFat%>, $weightInt, $heightInt, $selectedMuscleGroup. 
+                    Give me a workout plan using these information: $ageInt, ${user.bodyFat}, $weightInt, $heightInt, $selectedMuscleGroup. 
                     The output needs to be <TitleOfMuscleWorkout>, <duration in minutes>, <Intensity either Low, Medium, High>, 
                     <Exercises 3-5 only their names>. The output is a string comma separated with no spaces after the commas.
                 """.trimIndent()
