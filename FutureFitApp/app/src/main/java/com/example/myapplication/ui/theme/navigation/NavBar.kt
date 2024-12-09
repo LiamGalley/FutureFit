@@ -123,6 +123,11 @@ fun NavigationContent(
                     onRegistrationSuccess = {
                         isRegistrationValid = true
                         idUser = it
+                        InitalizeVmDbs(
+                            profileViewModel,
+                            settingsViewModel,
+                            idUser
+                        )
                         navController.navigate(Home.route) {
                             popUpTo("register_screen") { inclusive = true }
                         }
@@ -177,13 +182,12 @@ fun NavigationContent(
                         idUser,
                         dbViewModel,
                         gptViewModel,
-                        profileViewModel.height,
-                        profileViewModel.weight,
+                        settingsViewModel.height,
+                        settingsViewModel.weight,
                         profileViewModel.age,
                         profileViewModel.bodyFat,
                         profileViewModel.activityLevel,
                         settingsViewModel.metricSystem,
-                        { profileViewModel.initializeFromDb(idUser) }
                     )
                 }
             }
@@ -205,7 +209,6 @@ fun NavigationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SettingScreen(
-                        idUser,
                         profileViewModel.userId,
                         profileViewModel.userName,
                         profileViewModel.userEmail,
@@ -217,7 +220,6 @@ fun NavigationContent(
                         profileViewModel.age,
                         profileViewModel.bodyFat,
                         profileViewModel.activityLevel,
-                        { settingsViewModel.initializeFromDb(idUser) },
                         { settingsViewModel.toggleTheme() },
                         { settingsViewModel.toggleLargeFontSize() },
                         { settingsViewModel.toggleMeasurementSystem() }
@@ -227,6 +229,15 @@ fun NavigationContent(
 
         }
     }
+}
+
+fun InitalizeVmDbs(
+    profileViewModel: ProfileViewModel,
+    settingsViewModel: SettingsViewModel,
+    idUser: Account
+){
+    settingsViewModel.initializeFromDb(idUser)
+    profileViewModel.initializeFromDb(idUser)
 }
 
 

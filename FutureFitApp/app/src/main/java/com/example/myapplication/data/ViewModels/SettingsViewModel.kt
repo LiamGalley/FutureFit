@@ -1,5 +1,6 @@
 package com.example.myapplication.data.ViewModels
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.DataStores.DataStoreManager
@@ -26,13 +27,6 @@ class SettingsViewModel(
     var largeFontSize: StateFlow<Boolean> = _largeFontSize.asStateFlow()
     var height: StateFlow<Double> = _height.asStateFlow()
     var weight: StateFlow<Double> = _weight.asStateFlow()
-    var initialized: StateFlow<Boolean> = _initialized.asStateFlow()
-
-
-    var metricHeight = _height.value
-    var metricWeight = _weight.value
-    var imperialHeight = Math.round((_height.value / 30.48) * 1000.0) / 1000.0
-    var imperialWeight = Math.round((_weight.value * 2.20462) * 1000.0) / 1000.0
 
     init {
         viewModelScope.launch {
@@ -71,25 +65,33 @@ class SettingsViewModel(
         }
     }
 
-    fun switchMeasurements(){
-        if (_metricSystem.value){
-            viewModelScope.launch {
-                dataStoreManager.saveUserHeight(metricHeight)
-                _height.value = metricHeight
+    fun switchMeasurements() {
+        val isMetric = _metricSystem.value
 
-                dataStoreManager.saveUserWeight(metricWeight)
-                _weight.value = metricWeight
-            }
-        } else{
-            viewModelScope.launch {
+        viewModelScope.launch {
+            if (isMetric) {
+                val imperialHeight = (_height.value * 0.0328084)
+                val imperialWeight = (_weight.value * 2.20462)
+
                 dataStoreManager.saveUserHeight(imperialHeight)
-                _height.value = imperialHeight
-
                 dataStoreManager.saveUserWeight(imperialWeight)
-                _weight.value = imperialWeight
+
+                _height.value = Math.round(imperialHeight * 100.0) / 100.0
+                _weight.value = Math.round(imperialWeight * 100.0) / 100.0
+            } else {
+                val metricHeight = (_height.value / 0.0328084)
+                val metricWeight = (_weight.value / 2.20462)
+
+                // Save the converted values
+                dataStoreManager.saveUserHeight(metricHeight)
+                dataStoreManager.saveUserWeight(metricWeight)
+
+                _height.value = Math.round(metricHeight * 100.0) / 100.0
+                _weight.value = Math.round(metricWeight * 100.0) / 100.0
             }
         }
     }
+
 
     fun toggleLargeFontSize(){
         val system = !_largeFontSize.value

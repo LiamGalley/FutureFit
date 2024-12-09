@@ -47,21 +47,18 @@ fun WorkoutSelectionPage(
     user: Account,
     dbViewModel: DatabaseViewModel,
     gptViewModel: GPTViewModel,
-    height: StateFlow<Double>,
-    weight: StateFlow<Double>,
-    age: Int,
-    bodyFat: Double,
-    activityLevel: Int,
+    userHeight: StateFlow<Double>,
+    userWeight: StateFlow<Double>,
+    userAge: Int,
+    userBodyFat: Double,
+    userActivityLevel: Int,
     metricSystem: StateFlow<Boolean>,
-    initializeFromDb: () -> Unit,
 ) {
-    initializeFromDb()
-
-    var weight by remember { mutableStateOf(weight.value.toString()) }
-    var height by remember { mutableStateOf(height.value.toString()) }
-    var age by remember { mutableStateOf(age.toString()) }
-    var bodyFat by remember { mutableStateOf(bodyFat.toString()) }
-    var activityLevel by remember { mutableStateOf(activityLevel.toString()) }
+    var weight = userWeight.collectAsState().value.toString()
+    var height = userHeight.collectAsState().value.toString()
+    var age by remember { mutableStateOf(userAge.toString()) }
+    var bodyFat by remember { mutableStateOf(userBodyFat.toString()) }
+    var activityLevel by remember { mutableStateOf(userActivityLevel.toString()) }
     var selectedMuscleGroup by remember { mutableStateOf("Whole Body") }
 
     val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Shoulders", "Abs", "Whole Body")

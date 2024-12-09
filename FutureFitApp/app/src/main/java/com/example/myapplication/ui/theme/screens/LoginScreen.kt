@@ -141,19 +141,19 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(value = lastName, onValueChange = {lastName = it}, label = {Text(text = "LastName")})
+    OutlinedTextField(value = lastName, onValueChange = {lastName = it}, label = {Text(text = "Last Name")})
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(value = email, onValueChange = {email = it}, label = {Text(text = "Email adress")})
+    OutlinedTextField(value = email, onValueChange = {email = it}, label = {Text(text = "Email Address")})
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(value = height, onValueChange = {height = it}, label = {Text(text = "Height")})
+    OutlinedTextField(value = height, onValueChange = {height = it}, label = {Text(text = "Height (ft)")})
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(value = weight, onValueChange = {weight = it}, label = {Text(text = "Weight")})
+    OutlinedTextField(value = weight, onValueChange = {weight = it}, label = {Text(text = "Weight (KGs)")})
 
     Spacer(modifier = Modifier.height(16.dp))
 
@@ -165,7 +165,7 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(value = bodyFat, onValueChange = {bodyFat = it}, label = {Text(text = "BodyFat")})
+    OutlinedTextField(value = bodyFat, onValueChange = {bodyFat = it}, label = {Text(text = "Body Fat")})
 
     Spacer(modifier = Modifier.height(16.dp))
 
@@ -177,15 +177,28 @@ fun Register(callBack:()->Unit,onRegistrationSuccess:(Account)->Unit,dbViewModel
     val accountList = dbViewModel.getAccountByEmail(email).observeAsState(emptyList())
 
     Button(onClick = {
-        var check = false
-
-        if (email != "" && firstName != "" && lastName != "" && password != "" && accountList.value.size == 0 && height.toDoubleOrNull() != null && weight.toDoubleOrNull() != null && activityLevel.toIntOrNull() != null && bodyFat.toIntOrNull() != null) {
+        if (firstName == "" || firstName.length < 2){
+            Toast.makeText(current, "Please enter a valid first name (Minimum 3 letters)", Toast.LENGTH_SHORT).show()
+        } else if (lastName == "" || lastName.length < 2){
+            Toast.makeText(current, "Please enter a valid last name (Minimum 3 letters)", Toast.LENGTH_SHORT).show()
+        } else if (email == "" || !email.contains("@") || !email.contains(".")){
+            Toast.makeText(current, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+        } else if (password == "" || password.length < 5){
+            Toast.makeText(current, "Please enter a valid password (Minimum 6 letters)", Toast.LENGTH_SHORT).show()
+        } else if (accountList.value.isNotEmpty()){
+            Toast.makeText(current, "Please create a valid user", Toast.LENGTH_SHORT).show()
+        } else if (height.toDoubleOrNull() == null){
+            Toast.makeText(current, "Please enter a valid height", Toast.LENGTH_SHORT).show()
+        } else if (weight.toDoubleOrNull() == null){
+            Toast.makeText(current, "Please enter a valid weight", Toast.LENGTH_SHORT).show()
+        } else if (activityLevel.toIntOrNull() == null || activityLevel.toInt() > 5 || activityLevel.toInt() < 1){
+            Toast.makeText(current, "Please enter a valid activity level (1-5)", Toast.LENGTH_SHORT).show()
+        } else if (bodyFat.toIntOrNull() == null){
+            Toast.makeText(current, "Please enter a valid body fat percentage (Rounded)", Toast.LENGTH_SHORT).show()
+        } else {
             dbViewModel.upsertAccountFromUI(Account(firstName, lastName, email, password, height.toDouble(),weight.toDouble(),age.toInt(),activityLevel.toInt(),bodyFat.toInt())) { newAccount ->
                 onRegistrationSuccess(newAccount)
             }
-
-        } else {
-            Toast.makeText(current, "Please create a valid user", Toast.LENGTH_SHORT).show()
         }
     }){
         Text(text = "Register")

@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun SettingScreen(
-    idUser: Account,
     userId: StateFlow<Int>,
     userName: StateFlow<String>,
     userEmail: StateFlow<String>,
@@ -44,7 +43,6 @@ fun SettingScreen(
     age: Int,
     bodyFat: Double,
     activityLevel: Int,
-    initializeFromDb: () -> Unit,
     toggleTheme: () -> Unit,
     toggleFontSize: () -> Unit,
     toggleMeasurementSystem: () -> Unit,
@@ -57,8 +55,6 @@ fun SettingScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        initializeFromDb()
-
         Title()
 
         AccountInformation(userId, userName, userEmail)
