@@ -49,16 +49,16 @@ fun WorkoutSelectionPage(
     gptViewModel: GPTViewModel,
     userHeight: StateFlow<Double>,
     userWeight: StateFlow<Double>,
-    userAge: Int,
-    userBodyFat: Double,
-    userActivityLevel: Int,
+    userAge: StateFlow<Int>,
+    userBodyFat: StateFlow<Int>,
+    userActivityLevel: StateFlow<Int>,
     metricSystem: StateFlow<Boolean>,
 ) {
     var weight = userWeight.collectAsState().value.toString()
     var height = userHeight.collectAsState().value.toString()
-    var age by remember { mutableStateOf(userAge.toString()) }
-    var bodyFat by remember { mutableStateOf(userBodyFat.toString()) }
-    var activityLevel by remember { mutableStateOf(userActivityLevel.toString()) }
+    var age = userAge.collectAsState().value.toString()
+    var bodyFat = userBodyFat.collectAsState().value.toString()
+    var activityLevel = userActivityLevel.collectAsState().value.toString()
     var selectedMuscleGroup by remember { mutableStateOf("Whole Body") }
 
     val muscleGroups = listOf("Chest", "Back", "Legs", "Arms", "Shoulders", "Abs", "Whole Body")
@@ -113,7 +113,6 @@ fun WorkoutSelectionPage(
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
             )
         }
-
 
         // Age input
         TextField(
@@ -179,8 +178,8 @@ fun WorkoutSelectionPage(
             onClick = {
                 if (weight.isNotEmpty() && height.isNotEmpty() && age.isNotEmpty()) {
                     try {
-                        val weightInt = weight.toInt()
-                        val heightInt = height.toInt()
+                        val weightInt = weight.toDouble()
+                        val heightInt = height.toDouble()
                         val ageInt = age.toInt()
 
                         val workoutQuery = """

@@ -8,6 +8,21 @@ import kotlinx.coroutines.flow.map
 import com.example.myapplication.utils.PreferencesKeys
 
 class DataStoreManager(private val context: Context) {
+    suspend fun saveAge(age: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.AGE] = age }
+    }
+
+    suspend fun saveBodyFat(bodyFat: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.BODY_FAT] = bodyFat }
+    }
+
+    suspend fun saveActivityLevel(activityLevel: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.ACTIVITY_LEVEL] = activityLevel }
+    }
+
     suspend fun saveTheme(darkMode: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.DARK_MODE] = darkMode }
@@ -47,8 +62,18 @@ class DataStoreManager(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.INITIALIZED] = initialized }
     }
+
     val userIdFlow: Flow<Int> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.USER_ID] ?: 0}
+
+    val userAge: Flow<Int> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.AGE] ?: 0}
+
+    val userBodyFat: Flow<Int> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.BODY_FAT] ?: 0}
+
+    val userActivityLevel: Flow<Int> = context.dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.ACTIVITY_LEVEL] ?: 0}
 
     val userEmailFlow: Flow<String> = context.dataStore.data
         .map { preferences -> preferences[PreferencesKeys.USER_EMAIL] ?: ""}

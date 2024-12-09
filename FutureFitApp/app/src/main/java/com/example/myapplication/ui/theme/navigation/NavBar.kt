@@ -177,6 +177,11 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    InitalizeVmDbs(
+                        profileViewModel,
+                        settingsViewModel,
+                        idUser
+                    )
                     WorkoutSelectionPage(
                         navController,
                         idUser,
@@ -208,6 +213,11 @@ fun NavigationContent(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    InitalizeVmDbs(
+                        profileViewModel,
+                        settingsViewModel,
+                        idUser
+                    )
                     SettingScreen(
                         profileViewModel.userId,
                         profileViewModel.userName,
@@ -217,9 +227,9 @@ fun NavigationContent(
                         settingsViewModel.darkTheme,
                         settingsViewModel.metricSystem,
                         settingsViewModel.largeFontSize,
-                        profileViewModel.age,
-                        profileViewModel.bodyFat,
-                        profileViewModel.activityLevel,
+                        settingsViewModel.age,
+                        settingsViewModel.bodyFat,
+                        settingsViewModel.activityLevel,
                         { settingsViewModel.toggleTheme() },
                         { settingsViewModel.toggleLargeFontSize() },
                         { settingsViewModel.toggleMeasurementSystem() }

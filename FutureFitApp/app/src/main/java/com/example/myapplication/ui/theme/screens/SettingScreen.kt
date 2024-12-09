@@ -40,9 +40,9 @@ fun SettingScreen(
     darkTheme: StateFlow<Boolean>,
     metricSystem: StateFlow<Boolean>,
     largeFontSize: StateFlow<Boolean>,
-    age: Int,
-    bodyFat: Double,
-    activityLevel: Int,
+    age: StateFlow<Int>,
+    bodyFat: StateFlow<Int>,
+    activityLevel: StateFlow<Int>,
     toggleTheme: () -> Unit,
     toggleFontSize: () -> Unit,
     toggleMeasurementSystem: () -> Unit,
@@ -61,10 +61,12 @@ fun SettingScreen(
 
         if (metricSystem.collectAsState().value){
             PersonalInformation(height, weight, metricSystem.collectAsState().value,
-                "Metric", age, bodyFat, activityLevel)
+                "Metric", age.collectAsState().value, bodyFat.collectAsState().value,
+                activityLevel.collectAsState().value)
         } else{
             PersonalInformation(height, weight, metricSystem.collectAsState().value,
-                "Imperial", age, bodyFat, activityLevel)
+                "Imperial", age.collectAsState().value, bodyFat.collectAsState().value,
+                activityLevel.collectAsState().value)
         }
 
         AccountAppearance()
@@ -115,7 +117,7 @@ fun PersonalInformation(
     metricSystem: Boolean,
     metricSystemText: String,
     age: Int,
-    bodyFat: Double,
+    bodyFat: Int,
     activityLevel: Int,
 ){
     var weightMeasurement = ""

@@ -21,6 +21,10 @@ class ProfileViewModel(
     private val _height: MutableStateFlow<Double> = MutableStateFlow(0.0)
     private val _weight: MutableStateFlow<Double> = MutableStateFlow(0.0)
     private val _initialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _age: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _activityLevel: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _bodyFat: MutableStateFlow<Int> = MutableStateFlow(0)
+
     //#endregion
 
     var userId: StateFlow<Int> = _userId.asStateFlow()
@@ -28,11 +32,9 @@ class ProfileViewModel(
     var userEmail: StateFlow<String> = _userEmail.asStateFlow()
     var height: StateFlow<Double> = _height.asStateFlow()
     var weight: StateFlow<Double> = _weight.asStateFlow()
-    var initialized: StateFlow<Boolean> = _initialized.asStateFlow()
-
-    var bodyFat: Double = 0.0
-    var activityLevel: Int = 0
-    var age: Int = 0
+    var age: StateFlow<Int> = _age.asStateFlow()
+    var activityLevel: StateFlow<Int> = _activityLevel.asStateFlow()
+    var bodyFat: StateFlow<Int> = _bodyFat.asStateFlow()
 
     init{
         // CALL QUERY TO FILL ABOVE FIELDS
@@ -44,19 +46,20 @@ class ProfileViewModel(
             _height.value = dataStoreManager.userHeightFlow.first()
             _weight.value = dataStoreManager.userWeightFlow.first()
             _initialized.value = dataStoreManager.initialized.first()
+            _age.value = dataStoreManager.userAge.first()
+            _bodyFat.value = dataStoreManager.userBodyFat.first()
+            _activityLevel.value = dataStoreManager.userActivityLevel.first()
         }
     }
 
     fun initializeFromDb(idUser: Account){
-        if (!_initialized.value){
-            _weight.value = idUser.weight
-            _height.value = idUser.height
-            bodyFat = idUser.bodyFat.toDouble()
-            activityLevel = idUser.activityLevel
-            age = idUser.age
-            _userName.value = "${idUser.firstName} ${idUser.lastName}"
-            _userEmail.value = idUser.emailAddress
-        }
+        _weight.value = idUser.weight
+        _height.value = idUser.height
+        _bodyFat.value = idUser.bodyFat
+        _activityLevel.value = idUser.activityLevel
+        _age.value = idUser.age
+        _userName.value = "${idUser.firstName} ${idUser.lastName}"
+        _userEmail.value = idUser.emailAddress
     }
 
     //#region Methods

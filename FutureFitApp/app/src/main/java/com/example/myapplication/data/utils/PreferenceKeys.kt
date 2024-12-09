@@ -20,4 +20,7 @@ object PreferencesKeys {
     // Profile Preferences
     val HEIGHT = doublePreferencesKey("height")
     val WEIGHT = doublePreferencesKey("weight")
+    val AGE = intPreferencesKey("age")
+    val BODY_FAT = intPreferencesKey("body_fat")
+    val ACTIVITY_LEVEL = intPreferencesKey("activity_level")
 }
