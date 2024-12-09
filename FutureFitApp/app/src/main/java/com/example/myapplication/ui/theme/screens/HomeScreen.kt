@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.theme.screens
 
+import android.provider.ContactsContract.Data
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,14 +31,22 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.data.ViewModels.GPTViewModel
 import com.example.myapplication.R
+import com.example.myapplication.data.Database.DatabaseViewModel
+import com.example.myapplication.data.Entities.Account
+import com.example.myapplication.data.Entities.Workout
+import com.example.myapplication.data.ViewModels.GPTViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    dbViewModel: DatabaseViewModel,
+    user: Account,
+    gptViewModel: GPTViewModel) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -58,8 +69,7 @@ fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
                 ){
                     Text(
                         text = "Future",
-                        fontSize = 75.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                     Image(
@@ -71,8 +81,7 @@ fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
                     )
                     Text(
                         text = "Fit",
-                        fontSize = 75.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -95,8 +104,16 @@ fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
                             end = Offset(650F, 0F)
                         )
                     })
+                val workoutList by dbViewModel.getWorkoutByAccountId(user.id).observeAsState(emptyList())
+                val workout = workoutList.lastOrNull()
 
-                LatestWorkout(workouts.last())
+                if(workout != null)
+                {
+                    LatestWorkout(workout, dbViewModel)
+                }
+                else{
+                    Text(text = "No workout yet", fontSize = 24.sp)
+                }
 
                 GPTResponseScreen(gptViewModel)
 
@@ -108,11 +125,12 @@ fun HomeScreen(navController: NavController, gptViewModel: GPTViewModel) {
 
 @Composable
 fun GPTResponseScreen(viewModel: GPTViewModel) {
-    val userQuery = "Give me only 1 very short gym motivational quote different everytime"
+    val userQuery = "Give me only 1 very short gym motivational quote different every time"
 
     LaunchedEffect(Unit) {
-        viewModel.setQuery(userQuery)
-        viewModel.fetchGPTResponse()
+        val response = viewModel.fetchGPTResponse(userQuery)
+
+        viewModel.gptResponse = response
     }
 
     Scaffold { paddingValues ->
@@ -127,7 +145,7 @@ fun GPTResponseScreen(viewModel: GPTViewModel) {
                 text = viewModel.gptResponse,
                 fontSize = 29.sp,
                 fontWeight = FontWeight.Bold,
-                //maxLines = 5,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(16.dp)
             )
@@ -135,8 +153,9 @@ fun GPTResponseScreen(viewModel: GPTViewModel) {
     }
 }
 
+
 @Composable
-fun LatestWorkout(workout: Workout) {
+fun LatestWorkout(workout: Workout, dbViewModel: DatabaseViewModel) {
     Box(
         modifier = Modifier
             .padding(4.dp)
@@ -161,7 +180,7 @@ fun LatestWorkout(workout: Workout) {
 
             // Duration
             Text(
-                text = "Duration: ${workout.durationMinutes} minutes",
+                text = "Duration: ${workout.duration} minutes",
                 fontSize = 18.sp,
                 color = Color(0xFF666666)
             )
@@ -170,9 +189,9 @@ fun LatestWorkout(workout: Workout) {
 
             // Intensity Level
             Text(
-                text = "Intensity: ${workout.intensityLevel}",
+                text = "Intensity: ${workout.intensity}",
                 fontSize = 18.sp,
-                color = when (workout.intensityLevel) {
+                color = when (workout.intensity) {
                     "High" -> Color.Red
                     "Medium" -> Color.Magenta
                     "Low" -> Color.Green
@@ -193,9 +212,10 @@ fun LatestWorkout(workout: Workout) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            workout.exercises.forEach { exercise ->
+            val exerciseList by dbViewModel.getExerciseByWorkoutId(workout.workoutId).observeAsState(emptyList())
+            exerciseList.forEach { exercise ->
                 Text(
-                    text = "- $exercise",
+                    text = "- ${exercise.name}",
                     fontSize = 16.sp,
                     color = Color(0xFF444444)
                 )

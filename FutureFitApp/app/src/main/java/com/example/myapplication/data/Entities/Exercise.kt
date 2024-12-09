@@ -1,15 +1,25 @@
-package com.example.myapplication.data.entities
+package com.example.myapplication.data.Entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "exercise")
-class Exercise (
-    @PrimaryKey(autoGenerate = true) val id: Int,
+@Entity(
+    tableName = "exercise",
+    foreignKeys = [
+        ForeignKey(
+            entity = Workout::class,
+            parentColumns = ["workoutId"],
+            childColumns = ["workout_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index(value = ["workout_id"])]
+)
+data class Exercise(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "description") val description: String?,
-    @ColumnInfo(name = "difficulty") val difficulty: String
-) {
-
-}
+    @ColumnInfo(name = "workout_id") val workoutId: Int
+)

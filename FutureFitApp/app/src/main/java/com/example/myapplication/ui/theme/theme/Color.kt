@@ -1,11 +1,20 @@
-package com.example.myapplication.ui.theme
+package com.example.myapplication.ui.theme.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Light Theme Colors
+val LightForeground = Color(0xFFF7F7F7) // Almost White
+val LightBackground = Color(0xFFEBF5EE) // Soft Mint Green
+val LightPrimaryText = Color(0xFF344E41) // Deep Olive Green
+val LightSecondaryText = Color(0xFF6A9986) // Muted Teal
+val LightBorder = Color(0xFFA3C9A8) // Soft Pastel Green
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Used for testing purposes
+val RedText = Color(0xFFFF0000) // Bright Red
+
+// Dark Theme Colors
+val DarkForeGround = Color(0xFF121212) // Almost Black
+val DarkBackground = Color(0xFF1E1E2F) // Deep Charcoal
+val DarkPrimaryText = Color(0xFFF5F5F5) // Soft White
+val DarkSecondaryText = Color(0xFFB6C4CB) // Muted Steel Blue
+val DarkBorder = Color(0xFF8F8F8F) // Medium Gray
