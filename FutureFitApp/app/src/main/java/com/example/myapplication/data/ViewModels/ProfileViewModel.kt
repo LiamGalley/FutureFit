@@ -24,7 +24,6 @@ class ProfileViewModel(
     private val _age: MutableStateFlow<Int> = MutableStateFlow(0)
     private val _activityLevel: MutableStateFlow<Int> = MutableStateFlow(0)
     private val _bodyFat: MutableStateFlow<Int> = MutableStateFlow(0)
-
     //#endregion
 
     var userId: StateFlow<Int> = _userId.asStateFlow()
@@ -32,13 +31,12 @@ class ProfileViewModel(
     var userEmail: StateFlow<String> = _userEmail.asStateFlow()
     var height: StateFlow<Double> = _height.asStateFlow()
     var weight: StateFlow<Double> = _weight.asStateFlow()
+    var initialized: StateFlow<Boolean> = _initialized.asStateFlow()
     var age: StateFlow<Int> = _age.asStateFlow()
     var activityLevel: StateFlow<Int> = _activityLevel.asStateFlow()
     var bodyFat: StateFlow<Int> = _bodyFat.asStateFlow()
 
     init{
-        // CALL QUERY TO FILL ABOVE FIELDS
-
         viewModelScope.launch {
             _userId.value = dataStoreManager.userIdFlow.first()
             _userName.value = dataStoreManager.userNameFlow.first()
@@ -53,13 +51,25 @@ class ProfileViewModel(
     }
 
     fun initializeFromDb(idUser: Account){
-        _weight.value = idUser.weight
-        _height.value = idUser.height
-        _bodyFat.value = idUser.bodyFat
-        _activityLevel.value = idUser.activityLevel
-        _age.value = idUser.age
-        _userName.value = "${idUser.firstName} ${idUser.lastName}"
-        _userEmail.value = idUser.emailAddress
+            _weight.value = idUser.weight
+            _height.value = idUser.height
+            _bodyFat.value = idUser.bodyFat
+            _activityLevel.value = idUser.activityLevel
+            _age.value = idUser.age
+            _userName.value = "${idUser.firstName} ${idUser.lastName}"
+            _userEmail.value = idUser.emailAddress
+            _initialized.value = true
+
+            viewModelScope.launch {
+                dataStoreManager.saveUserWeight(idUser.weight)
+                dataStoreManager.saveUserHeight(idUser.height)
+                dataStoreManager.saveBodyFat(idUser.bodyFat)
+                dataStoreManager.saveActivityLevel(idUser.activityLevel)
+                dataStoreManager.saveUserName("${idUser.firstName} ${idUser.lastName}")
+                dataStoreManager.saveUserEmail(idUser.emailAddress)
+                dataStoreManager.saveInitialization(true)
+            }
+
     }
 
     //#region Methods
